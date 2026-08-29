@@ -278,6 +278,21 @@
 \newcommand{\sosatablesize}{\fontsize{10pt}{13pt}\selectfont}
 \newcommand{\sosatablesmall}{\fontsize{9pt}{11.5pt}\selectfont}
 
+% The journal's table body.  Supplies the \toprule and \bottomrule; you add the
+% \midrule under the head row.  The optional argument is the type size --
+% \sosatablesize (10 pt, the default) or \sosatablesmall (9 pt, for dense
+% tables like Table 1 in the source article).
+%
+%   \begin{sosatabular}[\sosatablesmall]{@{}L{150pt}L{130pt}R{110pt}@{}}
+%     \textbf{Değişkenler} & & \textbf{Sayı (\%)} \\
+%     \midrule
+%     Yaş & 50 yaş altı & 386 (\%54,0) \\
+%   \end{sosatabular}
+%
+\newenvironment{sosatabular}[2][\sosatablesize]
+  {#1\begin{tabular}{#2}\toprule}
+  {\bottomrule\end{tabular}}
+
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
@@ -597,8 +612,8 @@
 \newcommand{\sosaorcidmark}{%
   \raisebox{-0.15ex}{\begin{tikzpicture}[baseline=0pt]
     \fill[sosaorcid] (0,0.35ex) circle (0.55ex);
-    \node[white,font=\fontsize{3.4pt}{3.4pt}\selectfont\bfseries\sffamily]
-      at (0,0.35ex) {iD};
+    \node[white,inner sep=0pt] at (0,0.35ex)
+      {\resizebox{0.75ex}{!}{\normalfont\sffamily\bfseries iD}};
   \end{tikzpicture}}}
 \newcommand{\orcid}[1]{\,\href{https://orcid.org/#1}{\sosaorcidmark}}
 

@@ -15,6 +15,7 @@ other page, and steals width from the text column. Section
 
 | Path | What it is |
 |---|---|
+| `HANDOFF.md` | Full engineering handoff — measurements, architecture, what is and is not verified, revision cookbook. Start here if you are picking this up cold. |
 | `sosa.cls` | The class. Everything lives here. |
 | `main.tex` | A full worked example: front matter, body, two tables, a figure, a quote, APA references. |
 | `skeleton.tex` | A stripped-down starting point to copy for a new article. |

@@ -1,6 +1,13 @@
 % =============================================================================
-%  SoSa -- boş şablon / blank starting point.  Copy this file and fill it in.
-%  Derleme / compile twice:  latexmk -pdf skeleton.tex
+%  SoSa -- tek dosyalık boş şablon / single-file blank starter
+%
+%  main.tex makaleyi üç parçaya böler (frontmatter / body / references).
+%  Tek bir dosyayla çalışmayı tercih ederseniz bunu kopyalayın.
+%
+%  main.tex splits an article into three files. Copy this one instead if you
+%  would rather work in a single file.
+%
+%  Derleme / compile:  latexmk -pdf skeleton.tex   (iki kez / twice)
 % =============================================================================
 \documentclass[ornament=alternate,fontsize=11,lang=turkish]{sosa}
 
@@ -12,25 +19,30 @@
 }
 \SosaHero{assets/hero/hero-01}
 
-% --- künye / running heads ---------------------------------------------------
-\SosaStartPage{1}
-\SosaMasthead{Sosyal Bilimler ve Sağlık Bülteni (SoSa). 2026; Bahar(18):1-12}
-\SosaRunningHead{Kısa başlık. SoSa. 2026;Bahar(18)}
+% --- dergi ve sayı / journal and issue ---------------------------------------
+% Üst bant, sayfa üstü künyesi ve atıf cümlesi bunlardan üretilir.
+\SosaJournal      {Sosyal Bilimler ve Sağlık Bülteni}
+\SosaJournalShort {SoSa}
+\SosaYear         {2026}
+\SosaIssue        {Bahar}{18}
+\SosaPages        {1}{12}
+\SosaArticleType  {Özgün Makale}
 
-% --- başlık sayfası / front matter -------------------------------------------
-\SosaArticleType{Özgün Makale}
+% --- başlık / title -----------------------------------------------------------
 \SosaTitleTR{Makalenin Türkçe Başlığı}
 \SosaTitleEN{English Title of the Article}
+% \SosaShortTitle{Kısa başlık}
 
-\author{%
-  Ad Soyad\sosaaff{1}\orcid{0000-0000-0000-0000},
-  Ad Soyad\sosaaff{2}\orcid{0000-0000-0000-0001}%
-}
-\SosaAffiliations{%
-  \item Unvan, Kurum, Bölüm, Şehir, Türkiye.
-  \item Unvan, Kurum, Bölüm, Şehir, Türkiye.%
-}
+% --- yazarlar / authors --------------------------------------------------------
+%   \SosaAuthor{Ad Soyad}{kurum no}{ORCID}   -- her yazar için bir satır
+\SosaAuthor{Ad Soyad}{1}{0000-0000-0000-0000}
+\SosaAuthor{Ad Soyad}{2}{0000-0000-0000-0001}
 
+% --- kurumlar / affiliations ---------------------------------------------------
+\SosaAffiliation{Unvan, Kurum, Bölüm, Şehir, Türkiye.}
+\SosaAffiliation{Unvan, Kurum, Bölüm, Şehir, Türkiye.}
+
+% --- öz ve abstract -----------------------------------------------------------
 \SosaOz{%
   \textbf{Giriş:} \ldots
 
@@ -53,14 +65,14 @@
 }
 \SosaKeywordsEN{first, second, third}
 
-\SosaReceived{00.00.2026}
-\SosaAccepted{00.00.2026}
-\SosaPublished{00.00.2026}
-\SosaCorrespondingAuthor{Ad Soyad}
-\SosaCorrespondingEmail{ad.soyad@kurum.edu.tr}
-\SosaHandlingEditor{Ad Soyad}
-\SosaCitation{Soyad, A., \& Soyad, B. (2026). Makalenin Türkçe Başlığı.
-  \textit{Sosyal Bilimler ve Sağlık Bülteni (SoSa), BAHAR(18),} 1-12}
+% --- sayfa altı künyesi / colophon --------------------------------------------
+\SosaReceived            {00.00.2026}
+\SosaAccepted            {00.00.2026}
+\SosaPublished           {00.00.2026}
+\SosaCorrespondingAuthor {Ad Soyad}
+\SosaCorrespondingEmail  {ad.soyad@kurum.edu.tr}
+\SosaHandlingEditor      {Ad Soyad}
+\SosaCitationAuthors     {Soyad, A., \& Soyad, B.}
 
 % =============================================================================
 \begin{document}

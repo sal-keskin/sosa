@@ -1,0 +1,211 @@
+% =============================================================================
+%  BİRİNCİ SAYFA / PAGE ONE  --  doldurulacak form
+% =============================================================================
+%  Bu dosyadaki her satır ilk sayfada bir yere karşılık gelir. Sadece süslü
+%  parantezlerin { } içini değiştirin; komut adlarına dokunmayın.
+%
+%  Every line in this file corresponds to something on page one. Change only
+%  what is inside the braces { }; leave the command names alone.
+%
+%  Türkçe karakterleri doğrudan yazın: ğ İ ı ş ç ö ü â
+%  Yüzde işaretini kaçırın:  \%   ·  ve işaretini:  \&   ·  alt çizgiyi:  \_
+% =============================================================================
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  1. DERGİ VE SAYI  /  JOURNAL AND ISSUE                                   │
+% │                                                                           │
+% │  Bunları bir kez yazın. Üst bant yazısı, sayfa üstü künyesi ve atıf       │
+% │  cümlesi bunlardan otomatik üretilir.                                     │
+% │  Give these once. The masthead line, the running head and the suggested   │
+% │  citation are all built from them.                                        │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaJournal      {Sosyal Bilimler ve Sağlık Bülteni}
+\SosaJournalShort {SoSa}
+\SosaYear         {2026}
+\SosaIssue        {Bahar}{18}        % {sayı adı}{sayı numarası} / {label}{number}
+\SosaPages        {60}{70}           % {ilk sayfa}{son sayfa} / {first}{last}
+
+\SosaArticleType  {Özgün Makale}     % Derleme, Olgu Sunumu, Editöre Mektup ...
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  2. BAŞLIK  /  TITLE                                                      │
+% │                                                                           │
+% │  Türkçe başlık kapak bandının üstüne beyaz olarak yerleşir; iki satırı    │
+% │  geçmemelidir. İngilizce başlık bandın hemen altındadır.                  │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaTitleTR{Balıkesir'de Yaşayan Yetişkinlerin Sağlık Hizmetlerinde
+             Yapay Zekâ Kullanımına Dair Görüşleri}
+
+\SosaTitleEN{Perspectives of Adults Living in Balıkesir on the Use of
+             Artificial Intelligence in Healthcare}
+
+% Sayfa üstü künyesinde kullanılacak kısa başlık. Boş bırakırsanız tam
+% Türkçe başlık kullanılır.
+% Short title for the running head. Leave it out to use the full title.
+% \SosaShortTitle{Yetişkinlerin Sağlık Hizmetlerinde Yapay Zekâ Görüşleri}
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  3. YAZARLAR  /  AUTHORS                                                  │
+% │                                                                           │
+% │      \SosaAuthor{Ad Soyad}{kurum no}{ORCID}                               │
+% │                  ^isim     ^1 veya 1,2   ^boş bırakılabilir               │
+% │                                                                           │
+% │  Her yazar için bir satır, sırayla. Aralardaki virgüller, üst simgeler   │
+% │  ve ORCID rozetleri otomatik eklenir -- siz eklemeyin.                    │
+% │  One line per author, in order. Commas, superscripts and ORCID marks are  │
+% │  inserted for you -- do not type them.                                    │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaAuthor{Murat Aysin}                {1}{0000-0001-0000-0001}
+\SosaAuthor{Sultan Eser}                {2}{0000-0001-0000-0002}
+\SosaAuthor{Duygu Lüleci}               {1}{0000-0001-0000-0003}
+\SosaAuthor{Emine Ayhan Akman}          {1}{0000-0001-0000-0004}
+\SosaAuthor{Çağdaş Sonat}               {3}{0000-0001-0000-0005}
+\SosaAuthor{Dursun Yasemin Yayla Keskin}{3}{0000-0001-0000-0006}
+\SosaAuthor{Alikemal Başol}             {3}{0000-0001-0000-0007}
+\SosaAuthor{Ali Ceylan}                 {4}{0000-0001-0000-0008}
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  4. KURUMLAR  /  AFFILIATIONS                                             │
+% │                                                                           │
+% │  Yukarıdaki üst simgelerle aynı sırada, her kurum için bir satır.        │
+% │  Numaralar otomatik verilir.                                              │
+% │  One line per affiliation, in the same order as the superscripts above.   │
+% │  They are numbered for you.                                               │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaAffiliation{Dr. Öğr. Üyesi, Balıkesir Üniversitesi, Tıp Fakültesi,
+                 Halk Sağlığı Anabilim Dalı. Balıkesir, Türkiye.}
+\SosaAffiliation{Prof. Dr., Sağlık Bilimleri Üniversitesi, İzmir Tıp Fakültesi,
+                 Halk Sağlığı Anabilim Dalı, İzmir, Türkiye.}
+\SosaAffiliation{Arş. Gör. Dr., Balıkesir Üniversitesi, Tıp Fakültesi,
+                 Halk Sağlığı Anabilim Dalı. Balıkesir, Türkiye.}
+\SosaAffiliation{Prof. Dr., Balıkesir Üniversitesi, Tıp Fakültesi,
+                 Halk Sağlığı Anabilim Dalı. Balıkesir, Türkiye.}
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  5. ÖZ  /  TURKISH ABSTRACT                                               │
+% │                                                                           │
+% │  Alt başlıkları kalın yazın: \textbf{Giriş:} gibi.                        │
+% │  Paragrafları BOŞ SATIR ile ayırın.                                       │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaOz{%
+  \textbf{Giriş:} Yapay zekâ, sağlık hizmetlerinde tanı, tedavi planlaması,
+  hastalık öngörüsü, hasta bakım yönetimi ve klinik karar destek süreçlerinde
+  giderek daha fazla kullanım alanı bulmaktadır. Bu teknolojilerin sağlık
+  sistemine başarılı biçimde entegre edilebilmesi, toplumun yapay zekâyı
+  güvenilir ve faydalı bulmasıyla yakından ilişkilidir. Bu çalışmanın amacı,
+  Balıkesir'de yaşayan yetişkinlerin sağlık hizmetlerinde yapay zekâ
+  kullanımına dair görüşlerini belirlemektir.
+
+  \textbf{Gereç-Yöntem:} Kesitsel tipteki çalışma, Temmuz 2024'te Balıkesir
+  Altıeylül ilçesi merkez mahallelerinde yaşayan 18 yaş ve üzeri yetişkinlerde
+  yürütüldü. Çok aşamalı küme örnekleme yöntemiyle 715 kişiye ulaşıldı.
+  Veriler yüz yüze anket yöntemiyle Google Forms üzerinden toplandı. Veriler
+  SPSS 26.0 programında analiz edildi; kategorik değişkenler için ki-kare;
+  sürekli değişkenlerin analizi için t testi kullanıldı. Anlamlılık düzeyi
+  p${<}$0,05 kabul edildi.
+
+  \textbf{Bulgular:} Katılımcıların yaş ortalaması 40,3$\pm$15,3 olup
+  \%52,9'u kadındı. Katılımcıların \%64,5'i yapay zekânın sağlık
+  hizmetlerinde kullanımının faydalı olacağını düşünmekteydi. Katılımcıların
+  \%44,8'i yapay zekânın doğru tanılar sunacağını düşünürken, \%57,3'ü
+  kişisel verilerin güvenliği ile ilgili endişe duymaktaydı. Tek değişkenli
+  analizlerde cinsiyet ve sağlık hizmetlerinde yapay zekânın kullanımında
+  kişisel verilerin güvenliği ile ilgili endişe duyma dışında incelenen tüm
+  değişkenler ile yapay zekâyı faydalı bulma durumu arasında anlamlı fark
+  saptandı.
+
+  \textbf{Sonuç-Öneriler:} Sağlık hizmetlerinde yapay zekâya yönelik fayda
+  algısı sosyodemografik özellikler, sağlık durumu ve teletıp deneyimine göre
+  değişmektedir. Toplumun farklı gruplarına yönelik güven temelli, anlaşılır
+  ve kanıta dayalı bilgilendirme çalışmaları planlanmalıdır.%
+}
+
+\SosaKeywordsTR{sağlık hizmeti, yapay zeka, teletıp}
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  6. ABSTRACT  /  ENGLISH ABSTRACT                                         │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaAbstract{%
+  \textbf{Introduction:} Artificial intelligence is increasingly being used in
+  healthcare, particularly in diagnosis, treatment planning, disease
+  prediction, patient care management, and clinical decision support. The
+  successful integration of these technologies into the healthcare system is
+  closely associated with whether the public perceives artificial intelligence
+  as reliable and beneficial. This study aimed to determine the views of
+  adults living in Balıkesir regarding the use of artificial intelligence in
+  healthcare.
+
+  \textbf{Materials and Methods:} This cross-sectional study was conducted in
+  July 2024 among adults aged 18 years and older living in the central
+  neighborhoods of Altıeylül district, Balıkesir. A total of 715 participants
+  were reached using multistage cluster sampling. Data were collected through
+  face-to-face interviews using Google Forms. The data were analyzed using
+  SPSS version 26.0. The chi-square test was used for categorical variables,
+  and the t-test was used for continuous variables. Statistical significance
+  was set at p${<}$0.05.
+
+  \textbf{Results:} The mean age of the participants was 40.3$\pm$15.3 years,
+  and 52.9\% were female. Overall, 64.5\% thought that artificial intelligence
+  would be beneficial in healthcare. While 44.8\% believed that artificial
+  intelligence would provide accurate diagnoses, 57.3\% expressed concerns
+  about personal data security. In univariate analyses, all examined
+  variables, except sex and concerns about personal data security, differed
+  significantly according to whether artificial intelligence was perceived as
+  beneficial.
+
+  \textbf{Conclusion and Recommendations:} Perceptions of the benefits of
+  artificial intelligence in healthcare vary according to sociodemographic
+  characteristics, health status, and telemedicine experience. Clear,
+  evidence-based, and trust-oriented informational activities should be
+  planned for different groups in society.%
+}
+
+\SosaKeywordsEN{healthcare, artificial intelligence, telemedicine.}
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  7. SAYFA ALTI KÜNYESİ  /  COLOPHON AT THE FOOT OF PAGE ONE               │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+\SosaReceived            {16.05.2026}
+\SosaAccepted            {12.06.2026}
+\SosaPublished           {19.06.2026}
+\SosaCorrespondingAuthor {Murat Aysin}
+\SosaCorrespondingEmail  {murat.aysin@balikesir.edu.tr}
+\SosaHandlingEditor      {Nuray Özgülnar}
+
+% Atıf cümlesindeki yazar listesi. Gerisi (yıl, başlık, dergi, sayfalar)
+% yukarıdaki bilgilerden otomatik tamamlanır.
+% Just the author list for the citation. The year, title, journal and pages
+% are completed from the fields above.
+\SosaCitationAuthors{Aysin, M., Eser, S., Lüleci, D., Ayhan Akman, E.,
+  Sonat, Ç., Yayla Keskin, D. Y., Başol A., \& Ceylan A.}
+
+% Atıf cümlesini tümüyle kendiniz yazmak isterseniz bunu açın; yukarıdakini
+% geçersiz kılar. To write the whole citation by hand, uncomment this:
+% \SosaCitation{Soyad, A. (2026). Başlık. \textit{Dergi, SAYI(18),} 60-70}
+
+
+% ┌───────────────────────────────────────────────────────────────────────────┐
+% │  8. İSTEĞE BAĞLI NOT  /  OPTIONAL NOTE                                    │
+% │                                                                           │
+% │  Özetlerin altında görünür: kongre bildirisi, destek, tez bilgisi vb.     │
+% │  Gerekmiyorsa satırı yorumda bırakın.                                     │
+% │  Appears under the abstracts. Leave it commented out if not needed.       │
+% └───────────────────────────────────────────────────────────────────────────┘
+
+% \SosaNote{Bu makalede yer alan verilerin bir kısmı 27.12.2025 tarihinde
+%   Konya'da düzenlenen Uluslararası Selçuk Bilimsel Araştırmalar
+%   Kongresi'nde sunulmuştur.}

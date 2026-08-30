@@ -15,10 +15,14 @@ other page, and steals width from the text column. Section
 
 | Path | What it is |
 |---|---|
-| `HANDOFF.md` | Full engineering handoff — measurements, architecture, what is and is not verified, revision cookbook. Start here if you are picking this up cold. |
+| `frontmatter.tex` | **Start here.** Page one as a fill-in form: journal and issue, titles, authors, affiliations, both abstracts, colophon. |
+| `body.tex` | The article text. |
+| `references.tex` | The reference list. |
+| `main.tex` | Thin driver — the ornament artwork list, then it pulls in the three files above. |
 | `sosa.cls` | The class. Everything lives here. |
-| `main.tex` | A full worked example: front matter, body, two tables, a figure, a quote, APA references. |
-| `skeleton.tex` | A stripped-down starting point to copy for a new article. |
+| `skeleton.tex` | Single-file blank starter, if you would rather not split the article across files. |
+| `AGENTS.md` | Instructions for an AI assistant asked to typeset a manuscript with this template. Also `CLAUDE.md` and `.github/prompts/new-article.prompt.md`. |
+| `HANDOFF.md` | Full engineering handoff — measurements, architecture, what is and is not verified, revision cookbook. Start here if you are changing the layout. |
 | `assets/ornaments/*.jpg` | The ten side-strip illustrations lifted from the two source issues. Swap in your own. |
 | `assets/hero/*.jpg` | Two title-page banner images. |
 | `latexmkrc` | Runs the two passes `sosawide` needs. |
@@ -32,6 +36,10 @@ other page, and steals width from the text column. Section
 **Overleaf** — upload the whole folder, set *Menu → Compiler* to **pdfLaTeX**
 (XeLaTeX and LuaLaTeX also work), open `main.tex`, hit Recompile. Overleaf runs
 latexmk, so the two passes happen on their own.
+
+Then edit, in order: **`frontmatter.tex`** (page one), `body.tex` (the text),
+`references.tex`. `main.tex` only holds the artwork list — you rarely touch it,
+and `sosa.cls` you never do.
 
 **Locally**
 
@@ -60,41 +68,78 @@ the second pass.
 
 ## Front matter
 
-Everything on page one is declared in the preamble; `\maketitle` assembles it.
+Page one lives in `frontmatter.tex`, laid out as eight numbered blocks you fill
+in. It compiles into the masthead, the banner, the title, the author block, the
+two abstract panes and the colophon.
+
+### Journal and issue — give these once
 
 ```latex
-\SosaStartPage{60}                 % the issue's page number. Use this, not \setcounter{page}
-\SosaMasthead{Sosyal Bilimler ve Sağlık Bülteni (SoSa). 2026; Bahar(18):60-70}
-\SosaRunningHead{Short title. SoSa. 2026;Bahar(18)}
+\SosaJournal      {Sosyal Bilimler ve Sağlık Bülteni}
+\SosaJournalShort {SoSa}
+\SosaYear         {2026}
+\SosaIssue        {Bahar}{18}     % season label, issue number
+\SosaPages        {60}{70}        % first and last printed page
+\SosaArticleType  {Özgün Makale}
+```
 
-\SosaArticleType{Özgün Makale}
-\SosaTitleTR{Türkçe başlık}
-\SosaTitleEN{English title}
+Three strings are built from these rather than typed three times:
 
-\author{Ad Soyad\sosaaff{1}\orcid{0000-0000-0000-0000},
-        Ad Soyad\sosaaff{2}}
-\SosaAffiliations{%
-  \item Unvan, Kurum, Şehir, Türkiye.
-  \item Unvan, Kurum, Şehir, Türkiye.}
+| Derived | Looks like |
+|---|---|
+| masthead line | `Sosyal Bilimler ve Sağlık Bülteni (SoSa). 2026; Bahar(18):60-70` |
+| running head | `<short title>. SoSa. 2026;Bahar(18)` |
+| suggested citation | `<authors> (2026). <Turkish title>. `*`journal (SoSa), Bahar(18),`*` 60-70` |
 
-\SosaOz{\textbf{Giriş:} ... \textbf{Gereç-Yöntem:} ...}
+Set `\SosaMasthead{}`, `\SosaRunningHead{}` or `\SosaCitation{}` by hand only
+when the derived version is wrong — an explicit value always wins.
+
+`\SosaPages` also sets the page counter **and** anchors the ornament
+alternation. A bare `\setcounter{page}{60}` will not do it.
+
+### Titles
+
+```latex
+\SosaTitleTR{Türkçe başlık}          % white, inside the banner
+\SosaTitleEN{English title}          % bold, under the banner
+\SosaShortTitle{Kısa başlık}         % optional; defaults to the Turkish title
+```
+
+### Authors and affiliations — one line each
+
+```latex
+\SosaAuthor{Murat Aysin}{1}{0000-0001-0000-0001}
+\SosaAuthor{Sultan Eser}{2}{}          % ORCID may be empty
+\SosaAuthor{Ali Ceylan}{1,4}{0000-…}   % more than one affiliation
+
+\SosaAffiliation{Dr. Öğr. Üyesi, Balıkesir Üniversitesi, …}
+\SosaAffiliation{Prof. Dr., Sağlık Bilimleri Üniversitesi, …}
+```
+
+The commas between names, the superscript numbers and the ORCID marks are
+inserted for you; the affiliations are numbered in the order you give them. To
+hand-build the whole line instead, `\author{…}` and `\SosaAffiliations{\item …}`
+still work and override.
+
+### Abstracts
+
+```latex
+\SosaOz{\textbf{Giriş:} … \textbf{Gereç-Yöntem:} …}
 \SosaKeywordsTR{birinci, ikinci, üçüncü}
-\SosaAbstract{\textbf{Introduction:} ...}
+\SosaAbstract{\textbf{Introduction:} …}
 \SosaKeywordsEN{first, second, third}
+\SosaNote{Optional line under the abstracts: congress, funding, thesis …}
+```
 
-\SosaNote{Optional line: presented at a congress, funded by ...}
+### Colophon
 
+```latex
 \SosaReceived{16.05.2026}  \SosaAccepted{12.06.2026}  \SosaPublished{19.06.2026}
 \SosaCorrespondingAuthor{Ad Soyad}
 \SosaCorrespondingEmail{ad.soyad@kurum.edu.tr}
 \SosaHandlingEditor{Ad Soyad}
-\SosaCitation{Soyad, A. (2026). Başlık. \textit{Sosyal Bilimler ve
-              Sağlık Bülteni (SoSa), BAHAR(18),} 60-70}
+\SosaCitationAuthors{Soyad, A., \& Soyad, B.}   % the rest is derived
 ```
-
-`\SosaStartPage` does two things: it sets the page counter *and* tells the
-ornament engine which page is the title page, so the alternation counts from
-the right place. A bare `\setcounter{page}{60}` will not do.
 
 ## The ornament engine
 
@@ -154,7 +199,7 @@ The folio is printed over the strip by default. To drop it on strip pages, as
 the pp. 60–70 article does, put this in your preamble:
 
 ```latex
-\SosaHideFolioOnOrnamentPages
+\SosaHideFolioOnOrnamentPages    % \SosaShowFolioOnOrnamentPages restores it
 ```
 
 ### Why the text measure is constant

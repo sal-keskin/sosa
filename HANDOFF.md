@@ -5,7 +5,7 @@ working on `sosa.cls` without re-deriving anything: what was measured off the
 source PDFs, why the class is built the way it is, what a real compile has and
 has not proved, and exactly where to touch things for the usual revisions.
 
-State as of commit `8e59d7f` on branch `claude/journal-article-latex-template-ul5cft`.
+State as of commit `HEAD` on branch `claude/journal-article-latex-template-ul5cft`.
 Line numbers below are from that commit and will drift — the section numbers in
 `sosa.cls` (`% 1.` … `% 19.`) are the stable landmarks.
 
@@ -36,10 +36,16 @@ The source PDFs and the docx are **not** in the repo. Their artwork is, under
 ## 2. Repo map
 
 ```
-sosa.cls                     the class — everything lives here (809 lines, 19 sections)
-main.tex                     full worked example, reproduces the pp. 60–70 article
-skeleton.tex                 blank starting point to copy for a new article
+sosa.cls                     the class — everything lives here, 19 numbered sections
+main.tex                     thin driver: artwork list + \input of the three parts
+frontmatter.tex              page one as a fill-in form (the author's main file)
+body.tex                     the article text
+references.tex               the reference list
+skeleton.tex                 single-file blank starter, same API, no \input split
 README.md                    user-facing docs: options, API, measurement tables
+AGENTS.md                    instructions for an AI assistant typesetting a manuscript
+CLAUDE.md                    one-screen pointer: AGENTS.md vs HANDOFF.md vs README.md
+.github/prompts/             Copilot prompt file for the same job
 HANDOFF.md                   this file
 latexmkrc                    pdflatex, max_repeat 5
 docs/layout-spec.svg         the measured page grid drawn to scale, 3 page types
@@ -73,9 +79,17 @@ An Overleaf run (TeX Live 2026, pdfLaTeX) confirmed:
 - **Zero overfull hboxes** across all pages: the measure, the two abstract
   panes and the table widths all fit
 
-One bug surfaced and is fixed: `\newenvironment{sosatabular}` had been dropped
-in a rewrite, so every table failed with *Environment sosatabular undefined* and
-the column preamble printed as body text. Restored in `8e59d7f`.
+Two bugs surfaced and are fixed:
+
+- `\newenvironment{sosatabular}` had been dropped in a rewrite, so every table
+  failed with *Environment sosatabular undefined* and the column preamble
+  printed as body text.
+- Every `\ifx\sosa@x\@empty` test in the class was dead. `\newcommand` defines
+  `\long\def`; `\@empty` is a plain `\def`; `\ifx` compares the `\long` prefix
+  too, so the tests never matched and every "optional" block always fired. The
+  visible symptom was 22pt of dead space plus an empty paragraph under the
+  abstracts on page one, from the `\SosaNote` block that no document had set.
+  All nine now use etoolbox's `\ifdefempty`, which is prefix-agnostic.
 
 ### Not yet verified — do these first if you have a PDF
 
@@ -201,7 +215,7 @@ noted below.
 | 11 | **Ornament engine** | see §6 below |
 | 12 | Page furniture | band, strip, running head, folio — all stamped in eso-pic shipout hooks, **not** fancyhdr |
 | 13 | `sosawide` | reclaims the reserve, suppresses that page's strip via the `.aux` |
-| 14 | Front-matter data | plain setter macros |
+| 14 | Front-matter data | setters, plus the repeatable `\SosaAuthor` / `\SosaAffiliation` builders and the issue metadata whose `\AtBeginDocument` block derives the masthead, running head and citation |
 | 15 | Fixed strings | redefine these for an English-language issue |
 | 16 | `\sosaaff`, `\orcid` | ORCID mark is drawn in TikZ, no bitmap |
 | 17 | The first page | see §7 below |
@@ -408,7 +422,20 @@ The `Tablo`/`Görsel` caption words follow `lang` automatically.
 
 §14 is a flat list of `\newcommand{\sosa@x}{}` + `\newcommand{\SosaX}[1]{…}`
 pairs. Add the pair there, then place it in `\maketitle` (§17) or
-`\sosa@paintcolophon` depending on whether it flows or is fixed.
+`\sosa@paintcolophon` depending on whether it flows or is fixed. Guard optional
+fields with `\ifdefempty`, never `\ifx …\@empty` — see §9 trap 9.
+
+If the field belongs to the issue rather than the article, add it to the issue
+block instead and derive whatever depends on it in the `\AtBeginDocument` hook
+at the end of §14, following the pattern used for the masthead line.
+
+### 8.10 Update the agent instructions
+
+`AGENTS.md` is what another LLM reads before typesetting an article. Anything
+that changes the author-facing API — a new `\Sosa…` command, a renamed file, a
+new trap — belongs in its command reference and its "Do not" list.
+`.github/prompts/new-article.prompt.md` is a short summary that defers to it;
+`CLAUDE.md` just routes between the three docs.
 
 ### 8.8 Change the table look
 
@@ -458,6 +485,18 @@ Things that will bite an editor who does not know about them.
 8. **The class file has been broken once by a wholesale rewrite** (`sosatabular`
    vanished). If you rewrite a section, diff the public API afterwards. There is
    a one-liner for it in §10 below.
+9. **Never test a `\newcommand`-defined macro with `\ifx …\@empty`.**
+   `\newcommand` makes it `\long\def` and `\@empty` is not `\long`, so `\ifx`
+   is always false and the "empty" branch is unreachable. This shipped once and
+   put dead space on page one. Use `\ifdefempty{\macro}{yes}{no}`. The `\ifx`
+   tests against `\sosa@none` / `\sosa@all` / `\sosa@twelve` / `\sosa@stretch`
+   / `\sosa@tr` are fine — kvoptions stores option values with plain `\def`, so
+   both sides match.
+10. **`\SosaAuthor` and `\SosaAffiliation` append; `\author` and
+   `\SosaAffiliations` replace.** Mixing them in one document means last-write
+   wins in a confusing way. `\appto` also turns the accumulator into a
+   non-`\long` macro, so an author name containing `\par` would break — it
+   never will.
 
 ---
 
@@ -509,7 +548,8 @@ for pat in [r'\\newcommand\*?\{?\\([A-Za-z@]+)', r'\\renewcommand\*?\{?\\([A-Za-
             r'\\newsavebox\{\\([A-Za-z@]+)\}', r'\\newdimen\\([A-Za-z@]+)']:
     defined |= set(re.findall(pat,cls))
 miss=set()
-for f in ['main.tex','skeleton.tex','README.md']:
+for f in ['main.tex','frontmatter.tex','body.tex','references.tex',
+          'skeleton.tex','README.md','AGENTS.md']:
     s=open(f,encoding='utf8').read()
     if f.endswith('.tex'): s=re.sub(r'(?m)^\s*%.*$','',s)
     for env in re.findall(r'\\begin\{([A-Za-z@*]+)\}',s):
@@ -567,7 +607,9 @@ other work on it. Keep developing on this branch.
 In the order that gets the most value per compile:
 
 1. Compile `main.tex` and send back page 1 → tune the four front-page lengths
-   (§8.1). This is the only remaining gap between the class and the source.
+   (§8.1). This is the only remaining gap between the class and the source, and
+   the `\ifdefempty` fix should have removed 22pt of dead space under the
+   abstracts, so the earlier defaults may now be closer than they look.
 2. Compile a 12+ page article → confirm the alternation and the artwork cycle.
 3. Compile once with `fontsize=12` and once with `ornament=none`.
 4. Replace `assets/` with the current issue's artwork.

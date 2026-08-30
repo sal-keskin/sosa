@@ -466,22 +466,19 @@
     \ifnum\c@page=\sosa@startpage\relax
       % first page: the hero band
       \put(0,\LenToUnit{-\dimexpr\sosaherotop+\sosaheroheight\relax}){%
-        \ifx\sosa@herofile\@empty
-          \textcolor{sosaherofallback}{\rule{\paperwidth}{\sosaheroheight}}%
-        \else
-          \sosa@placeart{\paperwidth}{\sosaheroheight}{\sosa@herofile}%
-        \fi}%
+        \ifdefempty{\sosa@herofile}
+          {\textcolor{sosaherofallback}{\rule{\paperwidth}{\sosaheroheight}}}%
+          {\sosa@placeart{\paperwidth}{\sosaheroheight}{\sosa@herofile}}}%
     \else
       % body pages: the right-hand ornament strip
       \sosa@decideornament
       \ifsosa@paintorn
         \sosa@pickornament
-        \ifx\sosa@ornfile\@empty\else
+        \ifdefempty{\sosa@ornfile}{}{%
           \put(\LenToUnit{\dimexpr\paperwidth-\sosaornamentwidth\relax},%
                \LenToUnit{-\paperheight}){%
             \sosa@placeart{\sosaornamentwidth}%
-              {\dimexpr\paperheight-\sosabandheight\relax}{\sosa@ornfile}}%
-        \fi
+              {\dimexpr\paperheight-\sosabandheight\relax}{\sosa@ornfile}}}%
       \fi
     \fi
   }%
@@ -565,10 +562,37 @@
 \renewcommand{\title}[1]{\renewcommand{\sosa@titletr}{#1}}
 \newcommand{\SosaTitleTR}[1]{\renewcommand{\sosa@titletr}{#1}}
 \newcommand{\SosaTitleEN}[1]{\renewcommand{\sosa@titleen}{#1}}
+% --- authors, one \SosaAuthor line each ------------------------------------
+%   \SosaAuthor{Name Surname}{1,2}{0000-0000-0000-0000}
+%              ^name          ^affiliation numbers, or empty
+%                                  ^ORCID, or empty
+% Repeat once per author, in order.  The commas between names, the
+% superscripts and the ORCID marks are all inserted for you.
+%
+% \author{...} still works and overrides the whole line, for the rare case
+% where you need to hand-build it.
 \newcommand{\sosa@authorline}{}
+\newif\ifsosa@firstauthor \sosa@firstauthortrue
+\newcommand{\SosaAuthor}[3]{%
+  \ifsosa@firstauthor
+    \sosa@firstauthorfalse
+  \else
+    \appto\sosa@authorline{, }%
+  \fi
+  \appto\sosa@authorline{#1}%
+  \ifblank{#2}{}{\appto\sosa@authorline{\sosaaff{#2}}}%
+  \ifblank{#3}{}{\appto\sosa@authorline{\orcid{#3}}}%
+}
 \renewcommand{\author}[1]{\renewcommand{\sosa@authorline}{#1}}
+
+% --- affiliations, one \SosaAffiliation line each --------------------------
+% They are numbered automatically, in the order given, to match the
+% superscripts in \SosaAuthor.
 \newcommand{\sosa@affiliations}{}
+\newcommand{\SosaAffiliation}[1]{\appto\sosa@affiliations{\item #1}}
+% Plural form: hand-build the whole list of \item's at once.
 \newcommand{\SosaAffiliations}[1]{\renewcommand{\sosa@affiliations}{#1}}
+
 \newcommand{\sosa@note}{}
 \newcommand{\SosaNote}[1]{\renewcommand{\sosa@note}{#1}}
 
@@ -584,6 +608,55 @@
 \newcommand{\sosa@corrmail}{}   \newcommand{\SosaCorrespondingEmail}[1]{\renewcommand{\sosa@corrmail}{#1}}
 \newcommand{\sosa@editor}{}     \newcommand{\SosaHandlingEditor}[1]{\renewcommand{\sosa@editor}{#1}}
 \newcommand{\sosa@citation}{}   \newcommand{\SosaCitation}[1]{\renewcommand{\sosa@citation}{#1}}
+\newcommand{\sosa@citationauthors}{}
+\newcommand{\SosaCitationAuthors}[1]{\renewcommand{\sosa@citationauthors}{#1}}
+
+% --- issue metadata --------------------------------------------------------
+%  Give these once and the masthead line, the running head and the suggested
+%  citation are all built from them, instead of being typed three times in
+%  three slightly different forms.  Setting \SosaMasthead, \SosaRunningHead or
+%  \SosaCitation by hand still overrides the derived version.
+\newcommand{\sosa@journal}{}      \newcommand{\SosaJournal}[1]{\renewcommand{\sosa@journal}{#1}}
+\newcommand{\sosa@journalshort}{} \newcommand{\SosaJournalShort}[1]{\renewcommand{\sosa@journalshort}{#1}}
+\newcommand{\sosa@year}{}         \newcommand{\SosaYear}[1]{\renewcommand{\sosa@year}{#1}}
+\newcommand{\sosa@issuelabel}{}
+\newcommand{\sosa@issuenumber}{}
+\newcommand{\SosaIssue}[2]{%
+  \renewcommand{\sosa@issuelabel}{#1}\renewcommand{\sosa@issuenumber}{#2}}
+\newcommand{\sosa@firstpage}{}
+\newcommand{\sosa@lastpage}{}
+% \SosaPages also sets the start page, so the ornament alternation is anchored
+% correctly -- you do not need a separate \SosaStartPage.
+\newcommand{\SosaPages}[2]{%
+  \renewcommand{\sosa@firstpage}{#1}\renewcommand{\sosa@lastpage}{#2}%
+  \SosaStartPage{#1}}
+\newcommand{\sosa@shorttitle}{}
+\newcommand{\SosaShortTitle}[1]{\renewcommand{\sosa@shorttitle}{#1}}
+
+% Fill in whatever the author did not set explicitly.
+\AtBeginDocument{%
+  \ifdefempty{\sosa@shorttitle}
+    {\let\sosa@shorttitle\sosa@titletr}{}%
+  \ifdefempty{\sosamastheadline}{%
+    \renewcommand{\sosamastheadline}{%
+      \sosa@journal{} (\sosa@journalshort). \sosa@year;
+      \sosa@issuelabel(\sosa@issuenumber):\sosa@firstpage-\sosa@lastpage}%
+  }{}%
+  \ifdefempty{\sosarunninghead}{%
+    \renewcommand{\sosarunninghead}{%
+      \sosa@shorttitle. \sosa@journalshort. %
+      \sosa@year;\sosa@issuelabel(\sosa@issuenumber)}%
+  }{}%
+  \ifdefempty{\sosa@citation}{%
+    \ifdefempty{\sosa@citationauthors}{}{%
+      \renewcommand{\sosa@citation}{%
+        \sosa@citationauthors{} (\sosa@year). \sosa@titletr.
+        \textit{\sosa@journal{} (\sosa@journalshort),
+                \sosa@issuelabel(\sosa@issuenumber),}
+        \sosa@firstpage-\sosa@lastpage}%
+    }%
+  }{}%
+}
 
 % ---------------------------------------------------------------------------
 % 15. Fixed strings  (redefine any of these for an English-language issue)
@@ -691,12 +764,10 @@
         \textbf{\sosaacceptedname} \sosa@accepted\quad
         \textbf{\sosapublishedname} \sosa@published\par
         \textbf{\sosacorrname} \sosa@corrauthor
-        \ifx\sosa@corrmail\@empty\else
-          \quad\textbf{\sosamailname} \sosa@corrmail
-        \fi\par
-        \ifx\sosa@editor\@empty\else
-          \textbf{\sosaeditorname} \sosa@editor\par
-        \fi
+        \ifdefempty{\sosa@corrmail}{}%
+          {\quad\textbf{\sosamailname} \sosa@corrmail}\par
+        \ifdefempty{\sosa@editor}{}%
+          {\textbf{\sosaeditorname} \sosa@editor\par}%
         \textbf{\sosacitationname} \sosa@citation\par
       \end{minipage}}%
   }}
@@ -710,9 +781,8 @@
     \begin{minipage}{\sosafullwidth}%
       \color{sosaink}\setlength{\parskip}{0pt}\setlength{\parindent}{0pt}%
       % --- English title ---------------------------------------------------
-      \ifx\sosa@titleen\@empty\else
-        {\sosaentitlefont\raggedright\sosa@titleen\par}%
-      \fi
+      \ifdefempty{\sosa@titleen}{}%
+        {{\sosaentitlefont\raggedright\sosa@titleen\par}}%
       % --- authors ---------------------------------------------------------
       % The author line hangs 7.9pt into the left margin in the original.
       \vspace{\sosaskipauthors}%
@@ -721,7 +791,7 @@
         \sosaauthorfont\raggedright\sosa@authorline\par
       \end{minipage}\par
       % --- affiliations ----------------------------------------------------
-      \ifx\sosa@affiliations\@empty\else
+      \ifdefempty{\sosa@affiliations}{}{%
         \vspace{\sosaskipaffil}%
         {\sosaafffont\raggedright
          \begin{enumerate}[label=\arabic*., align=left,
@@ -729,8 +799,7 @@
              leftmargin=29.34pt, itemindent=0pt,
              itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt]
            \sosa@affiliations
-         \end{enumerate}}%
-      \fi
+         \end{enumerate}}}%
       % --- Öz | Abstract ---------------------------------------------------
       \vspace{\sosaskipabstract}\par
       \noindent
@@ -738,23 +807,20 @@
         {\sosaozheadfont\sosaozname\par}\vspace{4pt}%
         {\sosaabstractfont\setlength{\parskip}{8pt}\justifying
          \sosa@oz
-         \ifx\sosa@keywordstr\@empty\else
-           \par\noindent\textbf{\sosakeywordstrname} \sosa@keywordstr
-         \fi\par}%
+         \ifdefempty{\sosa@keywordstr}{}%
+           {\par\noindent\textbf{\sosakeywordstrname} \sosa@keywordstr}\par}%
       \end{minipage}\hfill
       \begin{minipage}[t]{\sosaabstractcolwidth}%
         {\sosaozheadfont\sosaabstractname\par}\vspace{4pt}%
         {\sosaabstractfont\setlength{\parskip}{8pt}\justifying
          \sosa@abstract
-         \ifx\sosa@keywordsen\@empty\else
-           \par\noindent\textbf{\sosakeywordsenname} \sosa@keywordsen
-         \fi\par}%
+         \ifdefempty{\sosa@keywordsen}{}%
+           {\par\noindent\textbf{\sosakeywordsenname} \sosa@keywordsen}\par}%
       \end{minipage}%
       % --- optional acknowledgement note ------------------------------------
-      \ifx\sosa@note\@empty\else
+      \ifdefempty{\sosa@note}{}{%
         \par\vspace{\sosaskipnote}%
-        {\sosanotefont\justifying\noindent\sosa@note\par}%
-      \fi
+        {\sosanotefont\justifying\noindent\sosa@note\par}}%
     \end{minipage}}%
   \par
   \clearpage}

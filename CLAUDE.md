@@ -11,6 +11,10 @@ Quick orientation:
   measurements taken off the published PDFs, the architecture of `sosa.cls`
   section by section, what a real compile has and has not verified, and the
   traps that have already caused one regression.
+- **Making the artwork** (cover banner, side strips) → `ARTWORK.md`. Run the
+  era / style / artist interview and wait for the answer before writing any
+  prompts. Claude cannot generate images: hand over finished prompts, sizes and
+  crop commands instead of improvising.
 - **Using the template as an author** → `README.md`.
 
 There is no test suite. `HANDOFF.md` §10 has the static checks that stand in

@@ -22,6 +22,8 @@ other page, and steals width from the text column. Section
 | `sosa.cls` | The class. Everything lives here. |
 | `skeleton.tex` | Single-file blank starter, if you would rather not split the article across files. |
 | `AGENTS.md` | Instructions for an AI assistant asked to typeset a manuscript with this template. Also `CLAUDE.md` and `.github/prompts/new-article.prompt.md`. |
+| `ARTWORK.md` | How to commission the banner and the side strips from an image model: exact sizes, the era/style/artist interview, prompt templates. |
+| `tools/crop-artwork.py` | Crops any generated image to the exact pixel size the layout needs. |
 | `HANDOFF.md` | Full engineering handoff — measurements, architecture, what is and is not verified, revision cookbook. Start here if you are changing the layout. |
 | `assets/ornaments/*.jpg` | The ten side-strip illustrations lifted from the two source issues. Swap in your own. |
 | `assets/hero/*.jpg` | Two title-page banner images. |
@@ -465,6 +467,12 @@ Listed so you can decide whether you care:
    article; `\SosaHideFolioOnOrnamentPages` matches the other one.
 
 ## Artwork
+
+New artwork for an issue is commissioned from an image model — see
+**[`ARTWORK.md`](ARTWORK.md)** for the exact sizes, the era / style / artist
+interview to run first, and the prompt templates that keep the whole set in one
+style. At 300 dpi the banner is 2480 × 450 px and each strip 350 × 3331 px;
+`tools/crop-artwork.py` cuts whatever a generator hands you down to that.
 
 `assets/ornaments/` and `assets/hero/` hold the illustrations extracted from
 the two source issues, kept so the template compiles to something that looks

@@ -44,8 +44,10 @@ references.tex               the reference list
 skeleton.tex                 single-file blank starter, same API, no \input split
 README.md                    user-facing docs: options, API, measurement tables
 AGENTS.md                    instructions for an AI assistant typesetting a manuscript
-CLAUDE.md                    one-screen pointer: AGENTS.md vs HANDOFF.md vs README.md
-.github/prompts/             Copilot prompt file for the same job
+ARTWORK.md                   how to commission the banner and strips from an image model
+CLAUDE.md                    one-screen pointer: AGENTS.md vs ARTWORK.md vs HANDOFF.md
+.github/prompts/             Copilot prompt files for both jobs
+tools/crop-artwork.py        crops generated art to the exact pixel size
 HANDOFF.md                   this file
 latexmkrc                    pdflatex, max_repeat 5
 docs/layout-spec.svg         the measured page grid drawn to scale, 3 page types
@@ -134,6 +136,12 @@ Three fidelity gaps, all now addressed:
 3. **Digit style.** The source uses lining figures; the `ebgaramond` default is
    oldstyle. Added as the `figures=lining|oldstyle` class option, left at
    `oldstyle` so the default behaviour is unchanged until someone compiles it.
+4. **The abstract panes were first-line indented.** `ragged2e` takes its own
+   copy of `\parindent` when it loads — which happens in the package block at
+   the top of the class, while `\parindent` is still the article default of
+   17.5pt — and `\justifying` restores that copy. §6 now zeroes
+   `\JustifyingParindent` and its three siblings alongside `\parindent`.
+   Setting `\parindent` is not enough on its own once ragged2e is in play.
 
 ### Known benign warnings
 
@@ -399,7 +407,13 @@ need work.
 
 ### 8.2 Swap the artwork
 
-Drop new files into `assets/ornaments/`, then in the preamble:
+To commission a fresh set from an image model, follow `ARTWORK.md` — it carries
+the exact pixel sizes, the era / style / artist interview, and the prompt
+templates. `tools/crop-artwork.py` crops whatever comes back to
+2480 × 450 px (banner) or 350 × 3331 px (strip) at 300 dpi.
+
+To use files you already have, drop them into `assets/ornaments/` and in the
+preamble:
 
 ```latex
 \SosaOrnamentCycle{assets/ornaments/a,assets/ornaments/b,assets/ornaments/c}

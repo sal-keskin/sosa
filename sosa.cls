@@ -199,6 +199,14 @@
 \normalsize
 
 \setlength{\parindent}{0pt}
+% ragged2e captures its own copy of \parindent when it loads, which happens in
+% the package block above -- while \parindent is still the article class's
+% 17.5pt.  \justifying then restores that, and the abstract panes on page one
+% came out first-line indented.  Zero all four.
+\setlength{\JustifyingParindent}{\z@}
+\setlength{\CenteringParindent}{\z@}
+\setlength{\RaggedRightParindent}{\z@}
+\setlength{\RaggedLeftParindent}{\z@}
 \setlength{\parskip}{8pt}
 \setlength{\emergencystretch}{2.5em}
 \hyphenpenalty=250

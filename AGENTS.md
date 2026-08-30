@@ -8,6 +8,10 @@ If you are being asked to change the *layout* rather than typeset an article,
 stop reading here and open **`HANDOFF.md`** instead — it has the measurements,
 the architecture and the reasons behind every design decision.
 
+If you are being asked for the **artwork** — the cover banner and the side
+strips — open **`ARTWORK.md`**: exact sizes, the style interview to run before
+generating anything, and the prompt templates.
+
 ---
 
 ## What this repository is
@@ -186,6 +190,11 @@ the human supplied artwork for this issue, add the new files and list them:
 
 Any tall narrow image works for a strip — it is cropped to fill, so aspect
 ratio does not matter. The hero banner is a wide image, roughly 5.5 : 1.
+
+To commission new artwork rather than reuse the old, follow **`ARTWORK.md`**.
+Exact sizes are 2480 × 450 px for the banner and 350 × 3331 px per strip at
+300 dpi; `python3 tools/crop-artwork.py` crops whatever a generator gives you
+down to them.
 
 If the banner is light or busy and the white title becomes hard to read, adjust
 the wash rather than the artwork:

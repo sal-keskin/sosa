@@ -21,6 +21,8 @@
 \DeclareStringOption[11]{fontsize}           % 11 | 12
 \DeclareStringOption[turkish]{lang}          % turkish | english
 \DeclareStringOption[cover]{ornamentfit}     % cover | stretch
+\DeclareStringOption[auto]{headstyle}        % auto | smallcaps | uppercase | asis
+\DeclareStringOption[oldstyle]{figures}      % oldstyle | lining
 \DeclareBoolOption{proof}                    % draw layout guides
 \DeclareBoolOption{nofont}                   % skip the EB Garamond setup
 \DeclareDefaultOption{\PassOptionsToClass{\CurrentOption}{article}}
@@ -72,7 +74,9 @@
     \RequirePackage[T1]{fontenc}
     \RequirePackage[utf8]{inputenc}
     \IfFileExists{ebgaramond.sty}
-      {\RequirePackage{ebgaramond}}
+      {\ifdefstring{\sosa@figures}{lining}
+         {\RequirePackage[lining]{ebgaramond}}
+         {\RequirePackage{ebgaramond}}}
       {\ClassWarningNoLine{sosa}{EB Garamond not found -- falling back to the
         default roman.  Install it (`tlmgr install ebgaramond') or compile
         with XeLaTeX/LuaLaTeX}}
@@ -86,7 +90,9 @@
           BoldFont          = *-Bold,
           BoldItalicFont    = *-BoldItalic,
           SmallCapsFeatures = {Letters=SmallCaps},
-          Ligatures         = TeX ]}
+          Language          = Turkish,
+          Ligatures         = TeX ]%
+       \ifdefstring{\sosa@figures}{lining}{\defaultfontfeatures{Numbers=Lining}}{}}
       {\IfFontExistsTF{EB Garamond}
         {\setmainfont{EB Garamond}[Ligatures=TeX,
            SmallCapsFeatures={Letters=SmallCaps}]}
@@ -443,14 +449,89 @@
 \newcommand{\SosaHideFolioOnOrnamentPages}{\sosa@foliohidetrue}
 \newcommand{\SosaShowFolioOnOrnamentPages}{\sosa@foliohidefalse}
 
-\newcommand{\sosaheadfont}{\fontsize{7.6pt}{9pt}\selectfont\scshape}
-\newcommand{\sosamastheadfont}{\fontsize{9pt}{11pt}\selectfont\scshape}
+\newcommand{\sosaheadfont}{\fontsize{7.6pt}{9pt}\selectfont}
+\newcommand{\sosamastheadfont}{\fontsize{9pt}{11pt}\selectfont}
 \newcommand{\sosafoliofont}{\fontsize{10pt}{12pt}\selectfont\bfseries}
+
+% --- Turkish small caps ----------------------------------------------------
+%  The masthead and the running head are set in small caps.  Ordinary small
+%  caps turn a lower-case `i' into a DOTLESS small capital, which in Turkish is
+%  a different letter: "Bilimler" comes out as "BILIMLER" where it must read
+%  "BİLİMLER".  The published journal gets this right -- it has the dot -- and
+%  the dotless small capital is reserved for `ı', as in "SAĞLIK".
+%
+%  Neither of our font paths gives us the OpenType `locl' feature that would do
+%  this automatically (the Type 1 EB Garamond has no features at all), so the
+%  substitution is made here: every literal `i' in the head string becomes a
+%  small capital carrying a dot accent.  `ı' is left alone and comes out
+%  dotless, which is what it should be.
+%
+%  \SosaHeadStyle picks the treatment:
+%    smallcaps   true small caps, with the substitution above (Turkish default)
+%    uppercase   \MakeUppercase -- locale-aware, so İ is also correct, but the
+%                result is full capitals rather than small ones
+%    asis        no transformation; type the head exactly as you want it
+%    auto        smallcaps under lang=turkish, plain \textsc otherwise
+\newcommand{\sosadottedsc}{\.{i}}
+\ExplSyntaxOn
+\tl_new:N \l__sosa_head_tl
+\cs_new_protected:Npn \__sosa_head_trsc:n #1
+  {
+    \tl_set:Nx \l__sosa_head_tl { #1 }
+    \tl_replace_all:Nnn \l__sosa_head_tl { i } { \sosadottedsc }
+    \textsc { \tl_use:N \l__sosa_head_tl }
+  }
+\cs_new_eq:NN \sosaturkishsc \__sosa_head_trsc:n
+\ExplSyntaxOff
+
+\newcommand{\SosaHeadStyle}[1]{\renewcommand{\sosa@headstyle}{#1}}
+\AtBeginDocument{%
+  \ifdefstring{\sosa@headstyle}{auto}{%
+    \ifsosa@turkish
+      \renewcommand{\sosa@headstyle}{smallcaps}%
+    \else
+      \renewcommand{\sosa@headstyle}{plainsmallcaps}%
+    \fi}{}%
+}
+% Applies the chosen treatment to one head string.
+\newcommand{\sosaheadcase}[1]{%
+  \ifdefstring{\sosa@headstyle}{asis}{#1}{%
+  \ifdefstring{\sosa@headstyle}{uppercase}{\MakeUppercase{#1}}{%
+  \ifdefstring{\sosa@headstyle}{plainsmallcaps}{\textsc{#1}}{%
+    \sosaturkishsc{#1}}}}}
 
 \newlength{\sosaherotop}    \setlength{\sosaherotop}{71pt}
 \newlength{\sosaheroheight} \setlength{\sosaheroheight}{108pt}
 \newcommand{\sosa@herofile}{}
 \newcommand{\SosaHero}[1]{\renewcommand{\sosa@herofile}{#1}}
+
+% --- keeping the title readable over the banner ----------------------------
+%  The banner artwork is chosen for the issue, not for the words that have to
+%  sit on top of it, so a light or busy image can swallow the white title.
+%  Two knobs:
+%
+%    \SosaHeroScrim{0.35}       a wash laid over the banner, 0 = off
+%    \SosaHeroScrimColor{black} what colour that wash is
+%    \SosaTitleColor{white}     the title itself
+%
+%  The scrim goes into the background, under the title, so it darkens the
+%  picture without touching the type.  For a pale banner, invert instead:
+%  \SosaHeroScrim{0} together with \SosaTitleColor{sosaink}.
+\newcommand{\sosa@scrimopacity}{0.35}
+\newcommand{\SosaHeroScrim}[1]{\renewcommand{\sosa@scrimopacity}{#1}}
+\newcommand{\sosa@scrimcolor}{black}
+\newcommand{\SosaHeroScrimColor}[1]{\renewcommand{\sosa@scrimcolor}{#1}}
+\newcommand{\sosa@titlecolor}{white}
+\newcommand{\SosaTitleColor}[1]{\renewcommand{\sosa@titlecolor}{#1}}
+
+\newcommand{\sosa@paintheroscrim}{%
+  \ifdim\sosa@scrimopacity pt>\z@
+    \put(0,\LenToUnit{-\dimexpr\sosaherotop+\sosaheroheight\relax}){%
+      \begin{tikzpicture}[baseline=0pt]
+        \fill[fill=\sosa@scrimcolor, opacity=\sosa@scrimopacity,draw=none]
+          (0pt,0pt) rectangle (\the\paperwidth,\the\sosaheroheight);
+      \end{tikzpicture}}%
+  \fi}
 
 \newcommand{\sosa@paintband}{%
   \ifnum\c@page=\sosa@startpage\relax
@@ -469,6 +550,7 @@
         \ifdefempty{\sosa@herofile}
           {\textcolor{sosaherofallback}{\rule{\paperwidth}{\sosaheroheight}}}%
           {\sosa@placeart{\paperwidth}{\sosaheroheight}{\sosa@herofile}}}%
+      \sosa@paintheroscrim
     \else
       % body pages: the right-hand ornament strip
       \sosa@decideornament
@@ -488,9 +570,9 @@
   \AtPageUpperLeft{%
     \put(\LenToUnit{\sosaheadinset},\LenToUnit{-\sosaheadbaseline}){%
       \ifnum\c@page=\sosa@startpage\relax
-        \textcolor{sosaink}{\sosamastheadfont\sosamastheadline}%
+        \textcolor{sosaink}{\sosamastheadfont\sosaheadcase{\sosamastheadline}}%
       \else
-        \textcolor{sosaink}{\sosaheadfont\sosarunninghead}%
+        \textcolor{sosaink}{\sosaheadfont\sosaheadcase{\sosarunninghead}}%
       \fi}%
   }%
   \sosa@decideornament
@@ -744,7 +826,7 @@
          \LenToUnit{-\dimexpr\sosaherotop+\sosaheroheight\relax}){%
       \begin{minipage}[b][\sosaheroheight][c]%
           {\dimexpr\paperwidth-2\sosatitleinset\relax}%
-        \color{white}\sosatitlefont\raggedright\sosa@titletr
+        \color{\sosa@titlecolor}\sosatitlefont\raggedright\sosa@titletr
       \end{minipage}}%
     \put(\LenToUnit{43.1pt},\LenToUnit{-63.5pt}){%
       \textcolor{sosaink}{\sosatypefont\sosa@articletype}}%

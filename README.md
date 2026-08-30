@@ -65,6 +65,8 @@ the second pass.
 | `ornamentfit` | `cover` \| `stretch` | `cover` | `cover` scales the artwork to the band height and crops it centred, so nothing is distorted. `stretch` squeezes it to fit, which is what the original PDFs actually do on some pages. |
 | `proof` | flag | off | Draws the text block, the strip edge and the full measure as thin coloured guides. Useful when you are nudging the front page. |
 | `nofont` | flag | off | Skip the EB Garamond setup and use whatever your preamble loads. |
+| `headstyle` | `auto` \| `smallcaps` \| `uppercase` \| `asis` | `auto` | How the masthead and running head are cased — see [Turkish small caps](#turkish-small-caps). |
+| `figures` | `oldstyle` \| `lining` | `oldstyle` | Digit style. The published journal uses **lining** figures; `oldstyle` is kept as the default only because it is what the current EB Garamond setup gives. |
 
 ## Front matter
 
@@ -140,6 +142,47 @@ still work and override.
 \SosaHandlingEditor{Ad Soyad}
 \SosaCitationAuthors{Soyad, A., \& Soyad, B.}   % the rest is derived
 ```
+
+## The banner and the title
+
+The title is set in white across the banner image at the top of page one.
+Banner artwork is chosen for the issue, not for the words that have to sit on
+it, so a light or busy picture can swallow the type. Three knobs, in `main.tex`
+next to `\SosaHero`:
+
+```latex
+\SosaHeroScrim{0.35}          % a wash over the banner; 0 = off, 1 = opaque
+\SosaHeroScrimColor{black}    % what colour that wash is
+\SosaTitleColor{white}        % the title itself
+```
+
+The scrim is painted into the page background, between the picture and the
+title, so it darkens the image without touching the type. For a pale banner you
+can go the other way instead — `\SosaHeroScrim{0}` with
+`\SosaTitleColor{sosaink}`.
+
+## Turkish small caps
+
+The masthead and the running head are set in small caps. Ordinary small caps
+turn a lower-case `i` into a **dotless** small capital, which in Turkish is a
+different letter: *Bilimler* comes out as BILIMLER where it has to read
+BİLİMLER. The published journal gets this right, and reserves the dotless small
+capital for `ı`, as in SAĞLIK.
+
+Neither font path gives us the OpenType `locl` feature that would do this
+automatically, so the class substitutes: every literal `i` in a head string
+becomes a small capital carrying a dot accent. `ı` is left alone and comes out
+dotless, correctly.
+
+If you want something else:
+
+```latex
+\SosaHeadStyle{smallcaps}   % true small caps + the İ fix (Turkish default)
+\SosaHeadStyle{uppercase}   % \MakeUppercase -- also correct, but full capitals
+\SosaHeadStyle{asis}        % no transformation; type the head exactly as you want
+```
+
+Under `lang=english` the default is plain `\textsc` with no substitution.
 
 ## The ornament engine
 

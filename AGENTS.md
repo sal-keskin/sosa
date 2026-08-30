@@ -187,6 +187,15 @@ the human supplied artwork for this issue, add the new files and list them:
 Any tall narrow image works for a strip — it is cropped to fill, so aspect
 ratio does not matter. The hero banner is a wide image, roughly 5.5 : 1.
 
+If the banner is light or busy and the white title becomes hard to read, adjust
+the wash rather than the artwork:
+
+```latex
+\SosaHeroScrim{0.45}          % 0 = off, 1 = opaque; default 0.35
+\SosaHeroScrimColor{black}
+\SosaTitleColor{white}        % or sosaink, for a pale banner with no scrim
+```
+
 ### 6. Compile and check
 
 ```sh
@@ -214,6 +223,10 @@ Then verify, in this order:
 
 - Type Turkish characters **directly**: ğ İ ı ş ç ö ü â. Do not use `\"u`,
   `\c{c}` or similar. The file is UTF-8 and the class handles it.
+- Write plain `i` in the journal name and the title. The masthead and running
+  head are small-capped, and the class turns each `i` into a dotted small
+  capital (BİLİMLER, not BILIMLER) while leaving `ı` dotless. Typing `İ`
+  yourself defeats that and gives a full-height capital.
 - `%` must be escaped as `\%` — `\%54,0`. This is the single most common
   breakage when pasting from Word, and it silently comments out the rest of the
   line rather than erroring.

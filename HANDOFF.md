@@ -106,6 +106,34 @@ Two bugs surfaced and are fixed:
    load time (470.55pt instead of ~409pt); it should be compiled once.
 5. **XeLaTeX / LuaLaTeX.** The `fontspec` branch of §3 has never run.
 6. **`sosawidekeep`** and **`\SosaStyleBibliography`** with real biblatex-apa.
+7. **The Turkish small-caps substitution.** `\.{i}` under `\scshape` should put
+   a dot accent over the small capital at the right height; it has not been
+   seen rendered. If the dot sits badly, the fallbacks are `\SosaHeadStyle`
+   `uppercase` or `asis`. The `\tl_set:Nx` also expands the head string, so a
+   head containing a fragile (non-`\protected`) macro would break — none of the
+   derived heads do.
+8. **`figures=lining`.** Passes the `lining` option to `ebgaramond`. If that
+   option name is wrong the compile stops at the class, so try it on its own.
+
+### Found by reading the first rendered page 1
+
+Three fidelity gaps, all now addressed:
+
+1. **Turkish small caps.** `\scshape` turns lower-case `i` into a dotless small
+   capital, so *Bilimler* set as BILIMLER. In Turkish that is a different
+   letter. A 420 dpi crop of the source masthead shows the journal getting it
+   right — BİLİMLER and BÜLTENİ carry the dot, and only `ı` is dotless, as in
+   SAĞLIK. Neither font path offers the OpenType `locl` feature that does this,
+   so §12 now substitutes each literal `i` for a small capital with a dot
+   accent, via an expl3 `\tl_replace_all:Nnn` on the expanded head string.
+   `\SosaHeadStyle` switches to `uppercase` (locale-aware `\MakeUppercase`) or
+   `asis` if the substitution disappoints.
+2. **The white title was unreadable** over a light, busy banner. §12 gains a
+   scrim — a tikz rectangle at `\SosaHeroScrim` opacity painted into the
+   background between the picture and the title — plus `\SosaTitleColor`.
+3. **Digit style.** The source uses lining figures; the `ebgaramond` default is
+   oldstyle. Added as the `figures=lining|oldstyle` class option, left at
+   `oldstyle` so the default behaviour is unchanged until someone compiles it.
 
 ### Known benign warnings
 

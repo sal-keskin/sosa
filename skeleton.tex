@@ -19,6 +19,21 @@
 }
 \SosaHero{assets/hero/hero-01}
 
+%  Başlığın okunabilirliği / keeping the title readable on the banner.
+%  Görsel açık renkli veya kalabalıksa beyaz başlık kaybolur. Aşağıdaki
+%  koyulaştırma perdesi resmin üzerine serilir, yazının altında kalır.
+%  A light or busy banner swallows the white title. This wash is laid over the
+%  picture, underneath the type.
+\SosaHeroScrim{0.35}          % 0 = kapalı / off .. 1 = tamamen opak / opaque
+\SosaHeroScrimColor{black}    % perdenin rengi / colour of the wash
+\SosaTitleColor{white}        % başlık rengi; açık bir görselde: sosaink
+
+%  Üst bant ve sayfa üstü künyesinin harf düzeni / how the heads are cased.
+%    smallcaps  küçük büyük harf, Türkçe İ noktalı (varsayılan / default)
+%    uppercase  tümü büyük harf, \MakeUppercase ile
+%    asis       ne yazdıysanız o / exactly as typed
+% \SosaHeadStyle{smallcaps}
+
 % --- dergi ve sayı / journal and issue ---------------------------------------
 % Üst bant, sayfa üstü künyesi ve atıf cümlesi bunlardan üretilir.
 \SosaJournal      {Sosyal Bilimler ve Sağlık Bülteni}

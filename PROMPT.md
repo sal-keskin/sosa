@@ -3,20 +3,41 @@
 For turning a manuscript into a finished SoSa package **without a coding
 assistant** — just a normal chat window.
 
-**How to use it**
+---
+
+## Before you start: let the assistant reach the template
+
+The prompt below asks the assistant to read the template from GitHub, so it
+works from the current files rather than from a summary that can go stale.
+
+**The repository `sal-keskin/sosa` is private.** An assistant browsing the web
+gets "not found" on a private repository, exactly as if it did not exist. So
+pick one of these first:
+
+| | What to do | What the assistant gets |
+|---|---|---|
+| **A. Make the repository public** | GitHub → Settings → General → Danger Zone → Change visibility | It fetches everything itself, always current. Best option if the template is not confidential. |
+| **B. Attach the folder** | GitHub → Code → Download ZIP, then attach the ZIP to the chat along with your manuscript | Same files, no browsing needed. Works today, works with any assistant that accepts file uploads. |
+| **C. Neither** | Just send the prompt and the manuscript | It falls back to the condensed reference built into the prompt. Fine for a normal article; it cannot check the current command list or look at `sosa.cls`. |
+
+**B is the safe default.** If you take A, the raw links in the prompt start
+working and you can skip the upload.
+
+## How to use it
 
 1. Open ChatGPT, Gemini, Claude, Copilot — whichever you have.
-2. Attach the manuscript (`.docx` or `.pdf`).
-3. Copy everything between the two lines below and send it with the file.
+2. Attach the manuscript (`.docx` or `.pdf`), and the template ZIP if you chose B.
+3. Copy everything between the two lines below and send it with the files.
 4. Answer its questions. It will not write any LaTeX until you have.
-5. Paste the four files it gives you over the ones in your template folder,
-   upload the folder to Overleaf, set the compiler to **pdfLaTeX**, Recompile.
+5. Paste the four files it gives you over the ones in your template folder.
+6. Upload the folder to Overleaf — *New Project → Upload Project* takes a ZIP —
+   set the compiler to **pdfLaTeX**, and Recompile. Twice.
 
 If the assistant can generate images it will also make the artwork. If it
 cannot, it hands you finished image prompts to paste into an image generator.
 
 > Working *with* a coding assistant inside the template folder instead?
-> Use [`AGENTS.md`](AGENTS.md) — it can read the files and compile.
+> Use [`AGENTS.md`](AGENTS.md) — it has file access and can compile.
 
 ---
 
@@ -30,7 +51,7 @@ explain anything you need from me in plain words.
 
 WHAT YOU WILL PRODUCE
 
-Four text files that I will paste into the template folder I already have:
+Four text files that I will put into the template folder:
 
   frontmatter.tex   page one: journal and issue data, titles, authors,
                     affiliations, both abstracts, the colophon
@@ -39,6 +60,30 @@ Four text files that I will paste into the template folder I already have:
   main.tex          only the artwork list — everything else stays as it is
 
 Do not write or modify sosa.cls. It is the layout and it is finished.
+
+STEP 0 — Get the template.
+
+The template lives at   https://github.com/sal-keskin/sosa
+
+Try, in this order, and tell me which one worked:
+
+  1. If I attached a ZIP of the template, read it from there. Prefer this.
+  2. Otherwise try to fetch these, if you can browse the web:
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/AGENTS.md
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/ARTWORK.md
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/frontmatter.tex
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/body.tex
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/references.tex
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/main.tex
+       https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/sosa.cls
+  3. If both fail — the repository is private, so “not found” is expected —
+     say so in one line and carry on using the reference further down this
+     prompt. Do not stop, and do not ask me to fix it.
+
+When you do have the files: AGENTS.md is the authoritative instructions and
+ARTWORK.md is the artwork brief. Follow them where they are more specific than
+this prompt, and tell me if they contradict it — that means this prompt is out
+of date and I need to know.
 
 WORK IN THIS ORDER. DO NOT SKIP STEP 1 OR 2.
 
@@ -84,7 +129,7 @@ STEP 3 — Artwork.
 
 The template needs one wide cover banner and several tall narrow side strips.
 Ask me whether I want new artwork for this article, or to keep the sample
-images that came with the template. If I want to keep them, skip to step 4.
+images that come with the template. If I want to keep them, skip to step 4.
 
 If I want new artwork, first propose — chosen to suit THIS article's subject,
 each with a one-line reason:
@@ -206,18 +251,29 @@ STEP 5 — Final report.
 
 End with a short list:
 
+  • which route in STEP 0 worked — ZIP, web, or the built-in reference
   • every placeholder you inserted, and what I need to find out
   • every figure file I still have to supply, with its expected filename
   • anything in the manuscript you could not express in the template, and what
     you did instead
   • the reminder that Overleaf must be set to pdfLaTeX and must compile twice
 
-Start now with STEP 1. Do not write any LaTeX yet.
+Start now with STEP 0, then STEP 1. Do not write any LaTeX yet.
 ```
 
 ---
 
 ## Why it is shaped this way
+
+**It reads the repository first.** The prompt carries a condensed command
+reference so it still works offline, but a copy of an API drifts out of date
+silently. Step 0 sends the assistant to `AGENTS.md` and `ARTWORK.md` in the
+repository and tells it to flag any contradiction — which turns a stale prompt
+into a reported problem instead of a wrong file.
+
+**Every route fails softly.** Private repository, no browsing, no ZIP — it says
+which route worked in one line and carries on. It never stops to ask you to fix
+your GitHub settings.
 
 **Inventory before output.** The commonest failure with a manuscript-to-LaTeX
 job is an assistant that produces a beautiful package with a plausible,
@@ -225,8 +281,8 @@ invented publication date in it. Step 1 forces a visible checklist and step 2
 forces a stop, so gaps surface as questions rather than as fiction.
 
 **Placeholders are always on offer.** "I'm not sure" is a valid answer to every
-question, and `<<EKSİK: …>>` is easy to grep for later. The prompt also asks for
-them to be listed again at the end, so nothing is quietly left in.
+question, and `<<EKSİK: …>>` is easy to search for later. They are listed again
+at the end so nothing is quietly left in.
 
 **The artwork branch is explicit.** An assistant with an image tool does the
 work; one without says so and hands over prompts. Both run the same era /

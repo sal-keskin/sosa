@@ -490,10 +490,16 @@ has to land in all of them:
 
 - `AGENTS.md` — for an assistant with file access and a compiler, working in
   this folder. Command reference and "Do not" list.
-- `PROMPT.md` — a self-contained block an editor pastes into a plain chat
-  window with a manuscript. The assistant there has no repo, so the prompt
-  carries its own condensed API; it drifts out of date silently. There is a
-  check for it in §10.
+- `PROMPT.md` — a block an editor pastes into a plain chat window with a
+  manuscript. Its step 0 sends the assistant to `AGENTS.md` and `ARTWORK.md`
+  over raw.githubusercontent, so the repository is the source of truth and the
+  condensed API in the prompt is only a fallback; the assistant is told to
+  report any contradiction between them, which is how a stale prompt gets
+  noticed. **The repository is private, so the web route 404s** — the prompt
+  expects that and falls through to an attached ZIP, then to its own reference.
+  Making the repository public turns the fetch on with no other change. URLs
+  use `/HEAD/`, so they survive a merge to `main` or a branch rename. There is
+  a check for the prompt's API references in §10.
 - `ARTWORK.md` — sizes and the style interview.
 
 `.github/prompts/*.prompt.md` are short summaries that defer to those;

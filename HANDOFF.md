@@ -44,6 +44,7 @@ references.tex               the reference list
 skeleton.tex                 single-file blank starter, same API, no \input split
 README.md                    user-facing docs: options, API, measurement tables
 AGENTS.md                    instructions for an AI assistant typesetting a manuscript
+PROMPT.md                    paste-into-chat prompt for an editor with no repo access
 ARTWORK.md                   how to commission the banner and strips from an image model
 CLAUDE.md                    one-screen pointer: AGENTS.md vs ARTWORK.md vs HANDOFF.md
 .github/prompts/             Copilot prompt files for both jobs
@@ -484,11 +485,19 @@ at the end of §14, following the pattern used for the masthead line.
 
 ### 8.10 Update the agent instructions
 
-`AGENTS.md` is what another LLM reads before typesetting an article. Anything
-that changes the author-facing API — a new `\Sosa…` command, a renamed file, a
-new trap — belongs in its command reference and its "Do not" list.
-`.github/prompts/new-article.prompt.md` is a short summary that defers to it;
-`CLAUDE.md` just routes between the three docs.
+Three documents describe the author-facing API to a machine, and a change to it
+has to land in all of them:
+
+- `AGENTS.md` — for an assistant with file access and a compiler, working in
+  this folder. Command reference and "Do not" list.
+- `PROMPT.md` — a self-contained block an editor pastes into a plain chat
+  window with a manuscript. The assistant there has no repo, so the prompt
+  carries its own condensed API; it drifts out of date silently. There is a
+  check for it in §10.
+- `ARTWORK.md` — sizes and the style interview.
+
+`.github/prompts/*.prompt.md` are short summaries that defer to those;
+`CLAUDE.md` routes between them.
 
 ### 8.8 Change the table look
 
@@ -602,7 +611,7 @@ for pat in [r'\\newcommand\*?\{?\\([A-Za-z@]+)', r'\\renewcommand\*?\{?\\([A-Za-
     defined |= set(re.findall(pat,cls))
 miss=set()
 for f in ['main.tex','frontmatter.tex','body.tex','references.tex',
-          'skeleton.tex','README.md','AGENTS.md']:
+          'skeleton.tex','README.md','AGENTS.md','PROMPT.md']:
     s=open(f,encoding='utf8').read()
     if f.endswith('.tex'): s=re.sub(r'(?m)^\s*%.*$','',s)
     for env in re.findall(r'\\begin\{([A-Za-z@*]+)\}',s):

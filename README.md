@@ -21,7 +21,8 @@ other page, and steals width from the text column. Section
 | `main.tex` | Thin driver — the ornament artwork list, then it pulls in the three files above. |
 | `sosa.cls` | The class. Everything lives here. |
 | `skeleton.tex` | Single-file blank starter, if you would rather not split the article across files. |
-| `AGENTS.md` | Instructions for an AI assistant asked to typeset a manuscript with this template. Also `CLAUDE.md` and `.github/prompts/new-article.prompt.md`. |
+| `PROMPT.md` | **A prompt to paste into ChatGPT / Gemini / Claude with your manuscript.** It asks what is missing, offers placeholders, makes the artwork if it can, and hands back the four finished files. No coding assistant needed. |
+| `AGENTS.md` | Instructions for an AI assistant working *inside* this folder, with file access and a compiler. Also `CLAUDE.md` and `.github/prompts/`. |
 | `ARTWORK.md` | How to commission the banner and the side strips from an image model: exact sizes, the era/style/artist interview, prompt templates. |
 | `tools/crop-artwork.py` | Crops any generated image to the exact pixel size the layout needs. |
 | `HANDOFF.md` | Full engineering handoff — measurements, architecture, what is and is not verified, revision cookbook. Start here if you are changing the layout. |
@@ -42,6 +43,12 @@ latexmk, so the two passes happen on their own.
 Then edit, in order: **`frontmatter.tex`** (page one), `body.tex` (the text),
 `references.tex`. `main.tex` only holds the artwork list — you rarely touch it,
 and `sosa.cls` you never do.
+
+**Have a manuscript and would rather not fill the files in by hand?** Paste the
+prompt in **[`PROMPT.md`](PROMPT.md)** into ChatGPT, Gemini or Claude together
+with your `.docx`. It takes inventory, asks about anything missing, offers
+placeholders where you are unsure, makes or specifies the artwork, and gives
+you the four files back ready to paste in.
 
 **Locally**
 

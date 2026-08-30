@@ -16,6 +16,9 @@ Quick orientation:
   prompts. Claude cannot generate images: hand over finished prompts, sizes and
   crop commands instead of improvising.
 - **Using the template as an author** → `README.md`.
+- **A prompt for a plain chat window** (editor uploads a manuscript to
+  ChatGPT/Gemini, no repo access) → `PROMPT.md`. Keep it in step with
+  `AGENTS.md`: if the author-facing API changes, both need updating.
 
 There is no test suite. `HANDOFF.md` §10 has the static checks that stand in
 for one when no TeX installation is available, and the log-reading recipes for

@@ -21,7 +21,7 @@
 \DeclareStringOption[11]{fontsize}           % 11 | 12
 \DeclareStringOption[turkish]{lang}          % turkish | english
 \DeclareStringOption[cover]{ornamentfit}     % cover | stretch
-\DeclareStringOption[auto]{headstyle}        % auto | smallcaps | uppercase | asis
+\DeclareStringOption[auto]{headstyle}        % auto|sentence|uppercase|smallcaps
 \DeclareStringOption[oldstyle]{figures}      % oldstyle | lining
 \DeclareBoolOption{proof}                    % draw layout guides
 \DeclareBoolOption{nofont}                   % skip the EB Garamond setup
@@ -474,13 +474,30 @@
 %  small capital carrying a dot accent.  `ı' is left alone and comes out
 %  dotless, which is what it should be.
 %
+%  What was tried, and what happened
+%  ---------------------------------
+%  First attempt was \.{i} -- a dot accent over the small capital.  It rendered
+%  with NO dot at all under T1 + EB Garamond, so the accent is either being
+%  swallowed by a text composite or the small-caps font has no dot accent to
+%  place.  The replacement below scales a real İ instead, which uses a glyph
+%  the font demonstrably has (the affiliations on page one set "İzmir"
+%  correctly), rather than relying on accent composition.
+%
+%  Even so, the default for Turkish is now `sentence' -- the head is set exactly
+%  as typed, with no case mapping at all.  A transformation that cannot run
+%  cannot get the letter wrong, and "Sosyal Bilimler ve Sağlık Bülteni" is
+%  already correct Turkish on the page.  This departs from the journal, which
+%  uses small caps; `uppercase' is the closer-looking option that is also
+%  correct, because \MakeUppercase under babel-turkish maps i to İ.
+%
 %  \SosaHeadStyle picks the treatment:
-%    smallcaps   true small caps, with the substitution above (Turkish default)
-%    uppercase   \MakeUppercase -- locale-aware, so İ is also correct, but the
-%                result is full capitals rather than small ones
-%    asis        no transformation; type the head exactly as you want it
-%    auto        smallcaps under lang=turkish, plain \textsc otherwise
-\newcommand{\sosadottedsc}{\.{i}}
+%    sentence    no transformation -- exactly as typed (Turkish default)
+%    uppercase   \MakeUppercase -- locale-aware, so İ is correct; full capitals,
+%                and the closest of these to the printed journal
+%    smallcaps   true small caps with the İ substitution described above
+%    asis        synonym for sentence
+%    auto        sentence under lang=turkish, plain \textsc otherwise
+\newcommand{\sosadottedsc}{\scalebox{0.8}{\normalfont İ}}
 \ExplSyntaxOn
 \tl_new:N \l__sosa_head_tl
 \cs_new_protected:Npn \__sosa_head_trsc:n #1
@@ -496,17 +513,18 @@
 \AtBeginDocument{%
   \ifdefstring{\sosa@headstyle}{auto}{%
     \ifsosa@turkish
-      \renewcommand{\sosa@headstyle}{smallcaps}%
+      \renewcommand{\sosa@headstyle}{sentence}%
     \else
       \renewcommand{\sosa@headstyle}{plainsmallcaps}%
     \fi}{}%
 }
 % Applies the chosen treatment to one head string.
 \newcommand{\sosaheadcase}[1]{%
+  \ifdefstring{\sosa@headstyle}{sentence}{#1}{%
   \ifdefstring{\sosa@headstyle}{asis}{#1}{%
   \ifdefstring{\sosa@headstyle}{uppercase}{\MakeUppercase{#1}}{%
   \ifdefstring{\sosa@headstyle}{plainsmallcaps}{\textsc{#1}}{%
-    \sosaturkishsc{#1}}}}}
+    \sosaturkishsc{#1}}}}}}
 
 \newlength{\sosaherotop}    \setlength{\sosaherotop}{71pt}
 \newlength{\sosaheroheight} \setlength{\sosaheroheight}{108pt}

@@ -232,10 +232,11 @@ Then verify, in this order:
 
 - Type Turkish characters **directly**: ğ İ ı ş ç ö ü â. Do not use `\"u`,
   `\c{c}` or similar. The file is UTF-8 and the class handles it.
-- Write plain `i` in the journal name and the title. The masthead and running
-  head are small-capped, and the class turns each `i` into a dotted small
-  capital (BİLİMLER, not BILIMLER) while leaving `ı` dotless. Typing `İ`
-  yourself defeats that and gives a full-height capital.
+- The masthead and running head apply **no case mapping** by default — they are
+  set exactly as typed. Small caps and all-caps both mangle Turkish `i`/`ı` if
+  the mapping is not locale-aware, so write the journal name and title in
+  ordinary sentence case and let them through unchanged. `\SosaHeadStyle{uppercase}`
+  is available and is locale-correct if the editor wants capitals.
 - `%` must be escaped as `\%` — `\%54,0`. This is the single most common
   breakage when pasting from Word, and it silently comments out the rest of the
   line rather than erroring.

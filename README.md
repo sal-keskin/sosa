@@ -67,7 +67,7 @@ the second pass.
 | `ornamentfit` | `cover` \| `stretch` | `cover` | `cover` scales the artwork to the band height and crops it centred, so nothing is distorted. `stretch` squeezes it to fit, which is what the original PDFs actually do on some pages. |
 | `proof` | flag | off | Draws the text block, the strip edge and the full measure as thin coloured guides. Useful when you are nudging the front page. |
 | `nofont` | flag | off | Skip the EB Garamond setup and use whatever your preamble loads. |
-| `headstyle` | `auto` \| `smallcaps` \| `uppercase` \| `asis` | `auto` | How the masthead and running head are cased — see [Turkish small caps](#turkish-small-caps). |
+| `headstyle` | `auto` \| `sentence` \| `uppercase` \| `smallcaps` | `auto` | How the masthead and running head are cased — see [Turkish case in the heads](#turkish-case-in-the-heads). |
 | `figures` | `oldstyle` \| `lining` | `oldstyle` | Digit style. The published journal uses **lining** figures; `oldstyle` is kept as the default only because it is what the current EB Garamond setup gives. |
 
 ## Front matter
@@ -163,28 +163,30 @@ title, so it darkens the image without touching the type. For a pale banner you
 can go the other way instead — `\SosaHeroScrim{0}` with
 `\SosaTitleColor{sosaink}`.
 
-## Turkish small caps
+## Turkish case in the heads
 
-The masthead and the running head are set in small caps. Ordinary small caps
-turn a lower-case `i` into a **dotless** small capital, which in Turkish is a
-different letter: *Bilimler* comes out as BILIMLER where it has to read
-BİLİMLER. The published journal gets this right, and reserves the dotless small
-capital for `ı`, as in SAĞLIK.
+The masthead and the running head were originally set in small caps, following
+the printed journal. Small caps turn a lower-case `i` into a **dotless** small
+capital, and in Turkish that is a different letter — *Bilimler* came out as
+BILIMLER where it has to read BİLİMLER, and *Balıkesir* as BALIKESIR.
 
-Neither font path gives us the OpenType `locl` feature that would do this
-automatically, so the class substitutes: every literal `i` in a head string
-becomes a small capital carrying a dot accent. `ı` is left alone and comes out
-dotless, correctly.
-
-If you want something else:
+Composing the dot as an accent over the small capital was tried and rendered
+with no dot at all under T1 + EB Garamond. Rather than keep guessing, the
+default now applies **no case mapping at all**: the head is set exactly as you
+typed it, which for correctly written Turkish is correct by construction.
 
 ```latex
-\SosaHeadStyle{smallcaps}   % true small caps + the İ fix (Turkish default)
-\SosaHeadStyle{uppercase}   % \MakeUppercase -- also correct, but full capitals
-\SosaHeadStyle{asis}        % no transformation; type the head exactly as you want
+\SosaHeadStyle{sentence}    % no transformation, exactly as typed (default)
+\SosaHeadStyle{uppercase}   % \MakeUppercase -- İ correct, and closest to the
+                           % printed journal, which sets these heads in capitals
+\SosaHeadStyle{smallcaps}   % small caps, with a scaled İ substituted for each i
+\SosaHeadStyle{asis}        % synonym for sentence
 ```
 
-Under `lang=english` the default is plain `\textsc` with no substitution.
+`uppercase` is worth trying: `\MakeUppercase` is locale-aware under
+babel-turkish, so it maps i → İ and ı → I correctly, and full capitals are what
+the journal actually prints. Under `lang=english` the default is plain
+`\textsc`, since none of this applies.
 
 ## The ornament engine
 

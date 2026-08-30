@@ -55,10 +55,15 @@
 \SosaTitleColor{white}        % başlık rengi; açık bir görselde: sosaink
 
 %  Üst bant ve sayfa üstü künyesinin harf düzeni / how the heads are cased.
-%    smallcaps  küçük büyük harf, Türkçe İ noktalı (varsayılan / default)
-%    uppercase  tümü büyük harf, \MakeUppercase ile
-%    asis       ne yazdıysanız o / exactly as typed
-% \SosaHeadStyle{smallcaps}
+%  Küçük büyük harf (small caps) Türkçe'de i harfinin noktasını düşürüyor --
+%  "Bilimler" yerine "BILIMLER" oluyor. Bu yüzden varsayılan, hiç harf
+%  dönüşümü yapmayan `sentence': ne yazdıysanız o.
+%  Small caps drop the dot on Turkish i, so the default applies no case
+%  mapping at all.
+%    sentence   dönüşüm yok, yazdığınız gibi (varsayılan / default)
+%    uppercase  tümü büyük harf -- İ doğru çıkar, dergiye en yakın görünüm
+%    smallcaps  küçük büyük harf; İ için ölçekli harf konur
+% \SosaHeadStyle{uppercase}
 
 %  Tek bir sayfayı elle ayarlamak isterseniz / to override a single page:
 %    \SosaOrnament{65}{assets/ornaments/ornament-03}   bu sayfada bu görsel

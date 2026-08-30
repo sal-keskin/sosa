@@ -108,12 +108,10 @@ Two bugs surfaced and are fixed:
    load time (470.55pt instead of ~409pt); it should be compiled once.
 5. **XeLaTeX / LuaLaTeX.** The `fontspec` branch of §3 has never run.
 6. **`sosawidekeep`** and **`\SosaStyleBibliography`** with real biblatex-apa.
-7. **The Turkish small-caps substitution.** `\.{i}` under `\scshape` should put
-   a dot accent over the small capital at the right height; it has not been
-   seen rendered. If the dot sits badly, the fallbacks are `\SosaHeadStyle`
-   `uppercase` or `asis`. The `\tl_set:Nx` also expands the head string, so a
-   head containing a fragile (non-`\protected`) macro would break — none of the
-   derived heads do.
+7. **`\SosaHeadStyle{uppercase}` and `{smallcaps}`.** Neither has been seen
+   rendered. `uppercase` relies on `\MakeUppercase` being locale-aware under
+   babel-turkish (LaTeX 2022+); `smallcaps` relies on the scaled-İ
+   substitution. The default, `sentence`, applies no mapping and cannot fail.
 8. **`figures=lining`.** Passes the `lining` option to `ebgaramond`. If that
    option name is wrong the compile stops at the class, so try it on its own.
 
@@ -121,15 +119,28 @@ Two bugs surfaced and are fixed:
 
 Three fidelity gaps, all now addressed:
 
-1. **Turkish small caps.** `\scshape` turns lower-case `i` into a dotless small
-   capital, so *Bilimler* set as BILIMLER. In Turkish that is a different
-   letter. A 420 dpi crop of the source masthead shows the journal getting it
-   right — BİLİMLER and BÜLTENİ carry the dot, and only `ı` is dotless, as in
-   SAĞLIK. Neither font path offers the OpenType `locl` feature that does this,
-   so §12 now substitutes each literal `i` for a small capital with a dot
-   accent, via an expl3 `\tl_replace_all:Nnn` on the expanded head string.
-   `\SosaHeadStyle` switches to `uppercase` (locale-aware `\MakeUppercase`) or
-   `asis` if the substitution disappoints.
+1. **Turkish small caps — two rounds.** `\scshape` turns lower-case `i` into a
+   dotless small capital, so *Bilimler* set as BILIMLER. In Turkish that is a
+   different letter. A 420 dpi crop of the source masthead shows the journal
+   getting it right — BİLİMLER and BÜLTENİ carry the dot, and only `ı` is
+   dotless, as in SAĞLIK. Neither font path offers the OpenType `locl` feature
+   that does this.
+
+   *First attempt:* substitute each literal `i` for `\.{i}` — a dot accent over
+   the small capital — via an expl3 `\tl_replace_all:Nnn` on the expanded head
+   string. **It rendered with no dot at all**, so the accent is either being
+   swallowed by a text composite or the T1 small-caps font has no dot accent to
+   place. A crop of the compiled masthead confirmed completely dotless I's.
+
+   *Now:* the Turkish default is `\SosaHeadStyle{sentence}` — no case mapping
+   whatsoever, so the head is whatever the author typed and is correct by
+   construction. `uppercase` (locale-aware `\MakeUppercase`) is offered as the
+   closer-to-the-journal option, and `smallcaps` keeps the substitution but
+   scales a real İ glyph instead of composing an accent. Both are unverified.
+
+   The lesson worth keeping: this is the second untested casing mechanism to
+   fail. Prefer the option that does nothing over a clever one you cannot
+   compile.
 2. **The white title was unreadable** over a light, busy banner. §12 gains a
    scrim — a tikz rectangle at `\SosaHeroScrim` opacity painted into the
    background between the picture and the title — plus `\SosaTitleColor`.

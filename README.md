@@ -49,8 +49,9 @@ prompt in **[`PROMPT.md`](PROMPT.md)** into ChatGPT, Gemini or Claude together
 with your `.docx`. It pulls the template from this repository, takes inventory,
 asks about anything missing, offers placeholders where you are unsure, makes or
 specifies the artwork, and gives you the four files back ready to paste in.
-Note that while this repository is private the assistant cannot fetch it — read
-the top of `PROMPT.md` for the two ways round that.
+This repository is public, so an assistant that can browse the web pulls the
+template itself; if yours cannot, attach
+[the ZIP](https://github.com/sal-keskin/sosa/archive/HEAD.zip) to the chat.
 
 **Locally**
 

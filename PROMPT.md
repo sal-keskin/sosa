@@ -5,33 +5,35 @@ assistant** — just a normal chat window.
 
 ---
 
-## Before you start: let the assistant reach the template
+## What it does
 
-The prompt below asks the assistant to read the template from GitHub, so it
-works from the current files rather than from a summary that can go stale.
+The prompt sends the assistant to this repository first, so it works from the
+current template rather than from a summary that can go stale. The repository
+is public, so any assistant that can browse the web will fetch
+`AGENTS.md`, `ARTWORK.md` and the four template files on its own — nothing to
+set up.
 
-**The repository `sal-keskin/sosa` is private.** An assistant browsing the web
-gets "not found" on a private repository, exactly as if it did not exist. So
-pick one of these first:
+If your assistant cannot browse (some do not), download the template and attach
+it to the chat instead:
 
-| | What to do | What the assistant gets |
-|---|---|---|
-| **A. Make the repository public** | GitHub → Settings → General → Danger Zone → Change visibility | It fetches everything itself, always current. Best option if the template is not confidential. |
-| **B. Attach the folder** | GitHub → Code → Download ZIP, then attach the ZIP to the chat along with your manuscript | Same files, no browsing needed. Works today, works with any assistant that accepts file uploads. |
-| **C. Neither** | Just send the prompt and the manuscript | It falls back to the condensed reference built into the prompt. Fine for a normal article; it cannot check the current command list or look at `sosa.cls`. |
+**<https://github.com/sal-keskin/sosa/archive/HEAD.zip>** — the whole template,
+about 2 MB.
 
-**B is the safe default.** If you take A, the raw links in the prompt start
-working and you can skip the upload.
+That same ZIP is what you upload to Overleaf, so it is worth having either way.
+If neither route works the prompt falls back to a condensed command reference
+built into it, and says so.
 
 ## How to use it
 
 1. Open ChatGPT, Gemini, Claude, Copilot — whichever you have.
-2. Attach the manuscript (`.docx` or `.pdf`), and the template ZIP if you chose B.
-3. Copy everything between the two lines below and send it with the files.
+2. Attach the manuscript (`.docx` or `.pdf`). Attach the template ZIP too if
+   your assistant cannot browse the web.
+3. Copy everything between the two lines below and send it with the file.
 4. Answer its questions. It will not write any LaTeX until you have.
-5. Paste the four files it gives you over the ones in your template folder.
-6. Upload the folder to Overleaf — *New Project → Upload Project* takes a ZIP —
-   set the compiler to **pdfLaTeX**, and Recompile. Twice.
+5. Download the template ZIP, replace the four files inside it with the ones it
+   gave you, and add any new artwork.
+6. Overleaf → *New Project → Upload Project* → that ZIP. Set the compiler to
+   **pdfLaTeX** under *Menu*, and Recompile **twice**.
 
 If the assistant can generate images it will also make the artwork. If it
 cannot, it hands you finished image prompts to paste into an image generator.
@@ -63,12 +65,11 @@ Do not write or modify sosa.cls. It is the layout and it is finished.
 
 STEP 0 — Get the template.
 
-The template lives at   https://github.com/sal-keskin/sosa
+The template is a public repository:  https://github.com/sal-keskin/sosa
 
-Try, in this order, and tell me which one worked:
+Try, in this order, and tell me in one line which one worked:
 
-  1. If I attached a ZIP of the template, read it from there. Prefer this.
-  2. Otherwise try to fetch these, if you can browse the web:
+  1. Fetch these, if you can browse the web:
        https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/AGENTS.md
        https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/ARTWORK.md
        https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/frontmatter.tex
@@ -76,14 +77,19 @@ Try, in this order, and tell me which one worked:
        https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/references.tex
        https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/main.tex
        https://raw.githubusercontent.com/sal-keskin/sosa/HEAD/sosa.cls
-  3. If both fail — the repository is private, so “not found” is expected —
-     say so in one line and carry on using the reference further down this
-     prompt. Do not stop, and do not ask me to fix it.
+  2. If you cannot browse but I attached a ZIP of the template, read it there.
+  3. If neither is possible, say so in one line and carry on using the
+     reference further down this prompt. Do not stop, and do not ask me to
+     install anything.
 
 When you do have the files: AGENTS.md is the authoritative instructions and
 ARTWORK.md is the artwork brief. Follow them where they are more specific than
 this prompt, and tell me if they contradict it — that means this prompt is out
 of date and I need to know.
+
+Read frontmatter.tex before you fill it in. It is a form with eight labelled
+blocks and comments in Turkish and English; keep its structure, its comments
+and its ordering, and change only what is inside the braces.
 
 WORK IN THIS ORDER. DO NOT SKIP STEP 1 OR 2.
 
@@ -251,7 +257,7 @@ STEP 5 — Final report.
 
 End with a short list:
 
-  • which route in STEP 0 worked — ZIP, web, or the built-in reference
+  • which route in STEP 0 worked — web, ZIP, or the built-in reference
   • every placeholder you inserted, and what I need to find out
   • every figure file I still have to supply, with its expected filename
   • anything in the manuscript you could not express in the template, and what
@@ -271,9 +277,10 @@ silently. Step 0 sends the assistant to `AGENTS.md` and `ARTWORK.md` in the
 repository and tells it to flag any contradiction — which turns a stale prompt
 into a reported problem instead of a wrong file.
 
-**Every route fails softly.** Private repository, no browsing, no ZIP — it says
-which route worked in one line and carries on. It never stops to ask you to fix
-your GitHub settings.
+**Every route fails softly.** No browsing, no ZIP — it says which route worked
+in one line and carries on with the built-in reference. It never stops to ask
+you to install or configure anything, and because the final report names the
+route, a package built from the fallback is identifiable.
 
 **Inventory before output.** The commonest failure with a manuscript-to-LaTeX
 job is an assistant that produces a beautiful package with a plausible,

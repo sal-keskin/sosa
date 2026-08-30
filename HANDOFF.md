@@ -495,11 +495,14 @@ has to land in all of them:
   over raw.githubusercontent, so the repository is the source of truth and the
   condensed API in the prompt is only a fallback; the assistant is told to
   report any contradiction between them, which is how a stale prompt gets
-  noticed. **The repository is private, so the web route 404s** — the prompt
-  expects that and falls through to an attached ZIP, then to its own reference.
-  Making the repository public turns the fetch on with no other change. URLs
-  use `/HEAD/`, so they survive a merge to `main` or a branch rename. There is
-  a check for the prompt's API references in §10.
+  noticed. The repository is public, so the fetch works — all seven raw URLs
+  were checked returning 200 and matching the local files. The prompt still
+  falls through to an attached ZIP and then to its own reference, for
+  assistants that cannot browse. URLs use `/HEAD/`, so they survive a merge to
+  `main` or a branch rename; **if the repository is ever made private again
+  they silently 404** and every editor quietly gets the fallback, which the
+  prompt's final report is designed to surface. There is a check for the
+  prompt's API references in §10.
 - `ARTWORK.md` — sizes and the style interview.
 
 `.github/prompts/*.prompt.md` are short summaries that defer to those;

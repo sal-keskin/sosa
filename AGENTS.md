@@ -12,10 +12,12 @@ If you are being asked for the **artwork** — the cover banner and the side
 strips — open **`ARTWORK.md`**: exact sizes, the style interview to run before
 generating anything, and the prompt templates.
 
-`PROMPT.md` is a different thing: a self-contained prompt an editor pastes into
-a plain chat window with their manuscript, where the assistant has no file
-access and cannot compile. You are not that assistant — you have the files, so
-use this document. If you change the author-facing API, update `PROMPT.md` too.
+`PROMPT.md` is a different thing: a prompt an editor pastes into a plain chat
+window with their manuscript. That assistant cannot compile, and reaches this
+repository only by fetching raw URLs — including this file, which it treats as
+authoritative. You are not that assistant: you have the files locally, so use
+this document directly. If you change the author-facing API, update `PROMPT.md`
+as well; it carries a condensed copy for assistants that cannot browse.
 
 ---
 

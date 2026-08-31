@@ -196,6 +196,9 @@ frontmatter.tex uses these commands — one line each, in this order:
   \SosaHandlingEditor{...}
   \SosaCitationAuthors{Soyad, A., \& Soyad, B.}   % just the names; the year,
                                  % title, journal and pages are filled in for you
+  % The band at the top of each page is built from the fields above. Body pages
+  % alternate: article title, then journal name, then title … Add
+  % \SosaRunningHeadMode{title} only if I ask for the title on every page.
   \SosaNote{...}                 % optional, leave out if there is none
 
 Do NOT type the commas between author names, the superscript numbers, the ORCID

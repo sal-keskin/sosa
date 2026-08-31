@@ -445,10 +445,53 @@
 %  Band, strip, running head and folio all sit outside the galley, so they go
 %  into the shipout hooks at absolute coordinates rather than through fancyhdr.
 %  That is what makes the geometry exact.
+%  Three different strings live in the band:
+%
+%    page one          the masthead, with the article's page range
+%                      Journal (Short). Year; Issue(Number):first-last
+%    body, title form  the article, so a reader who photocopies a spread knows
+%                      what they are holding
+%                      Short title. Short. Year;Issue(Number)
+%    body, journal form  the publication, for the same reason from the other
+%                      side.  No page range -- that belongs to page one.
+%                      Journal (Short). Year; Issue(Number)
+%
+%  \SosaRunningHeadMode decides which of the two body forms is used:
+%
+%    alternate   title on the page after the front page, then journal, then
+%                title … (the default)
+%    title       the article title on every body page -- this is what both
+%                sample issues of the journal actually do
+%    journal     the journal line on every body page
 \newcommand{\sosarunninghead}{}
 \newcommand{\SosaRunningHead}[1]{\renewcommand{\sosarunninghead}{#1}}
+\newcommand{\sosarunningheadjournal}{}
+\newcommand{\SosaRunningHeadJournal}[1]{%
+  \renewcommand{\sosarunningheadjournal}{#1}}
+\newcommand{\sosa@runheadmode}{alternate}
+\newcommand{\SosaRunningHeadMode}[1]{\renewcommand{\sosa@runheadmode}{#1}}
 \newcommand{\sosamastheadline}{}
 \newcommand{\SosaMasthead}[1]{\renewcommand{\sosamastheadline}{#1}}
+
+% Which of the two body forms belongs on this page.  The alternation is counted
+% from the front page, so the page immediately after it carries the title.
+%
+% This resolves to a \let copy rather than expanding to a conditional, because
+% \SosaHeadStyle{smallcaps} x-expands the head string and etoolbox's
+% \ifdefstring is robust -- an unevaluated \ifdefstring would survive into the
+% typeset text.  \sosa@bodyhead must always be a plain macro by the time
+% \sosaheadcase sees it.
+\newcommand{\sosa@bodyhead}{}
+\newcommand{\sosa@selectbodyhead}{%
+  \ifdefstring{\sosa@runheadmode}{title}
+    {\let\sosa@bodyhead\sosarunninghead}{%
+  \ifdefstring{\sosa@runheadmode}{journal}
+    {\let\sosa@bodyhead\sosarunningheadjournal}{%
+    \ifodd\numexpr\c@page-\sosa@startpage\relax
+      \let\sosa@bodyhead\sosarunninghead
+    \else
+      \let\sosa@bodyhead\sosarunningheadjournal
+    \fi}}}
 
 % On ornament pages the folio sits underneath the strip.  One source article
 % simply drops it there, the other prints it over the artwork.  Printing it is
@@ -598,7 +641,8 @@
       \ifnum\c@page=\sosa@startpage\relax
         \textcolor{sosaink}{\sosamastheadfont\sosaheadcase{\sosamastheadline}}%
       \else
-        \textcolor{sosaink}{\sosaheadfont\sosaheadcase{\sosarunninghead}}%
+        \sosa@selectbodyhead
+        \textcolor{sosaink}{\sosaheadfont\sosaheadcase{\sosa@bodyhead}}%
       \fi}%
   }%
   \sosa@decideornament
@@ -754,6 +798,11 @@
     \renewcommand{\sosarunninghead}{%
       \sosa@shorttitle. \sosa@journalshort. %
       \sosa@year;\sosa@issuelabel(\sosa@issuenumber)}%
+  }{}%
+  \ifdefempty{\sosarunningheadjournal}{%
+    \renewcommand{\sosarunningheadjournal}{%
+      \sosa@journal{} (\sosa@journalshort). \sosa@year;
+      \sosa@issuelabel(\sosa@issuenumber)}%
   }{}%
   \ifdefempty{\sosa@citation}{%
     \ifdefempty{\sosa@citationauthors}{}{%

@@ -155,6 +155,21 @@ Three fidelity gaps, all now addressed:
    `\JustifyingParindent` and its three siblings alongside `\parindent`.
    Setting `\parindent` is not enough on its own once ragged2e is in play.
 
+### Editorial change, not a fidelity fix
+
+The band on body pages now **alternates** between the article title and the
+journal line — title on the page after the front page, journal on the next, and
+so on. Both sample issues put the title on every body page; this was asked for
+deliberately, and `\SosaRunningHeadMode{title}` restores what the printed
+issues do. Only page one carries the page range; the body forms stop at the
+issue number.
+
+`\sosa@bodyhead` is resolved with `\let` by `\sosa@selectbodyhead` before
+`\sosaheadcase` sees it, rather than expanding to a conditional. That matters:
+`\SosaHeadStyle{smallcaps}` x-expands the head string, and etoolbox's
+`\ifdefstring` is robust, so an unevaluated conditional would survive into the
+typeset text. Anything new that feeds `\sosaheadcase` must be a plain macro.
+
 ### Known benign warnings
 
 `LaTeX Font Warning: Size substitutions with differences up to 1.6pt` —

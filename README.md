@@ -97,16 +97,32 @@ two abstract panes and the colophon.
 \SosaArticleType  {Özgün Makale}
 ```
 
-Three strings are built from these rather than typed three times:
+Four strings are built from these rather than typed out by hand:
 
-| Derived | Looks like |
-|---|---|
-| masthead line | `Sosyal Bilimler ve Sağlık Bülteni (SoSa). 2026; Bahar(18):60-70` |
-| running head | `<short title>. SoSa. 2026;Bahar(18)` |
-| suggested citation | `<authors> (2026). <Turkish title>. `*`journal (SoSa), Bahar(18),`*` 60-70` |
+| Derived | Where | Looks like |
+|---|---|---|
+| masthead | page one | `Sosyal Bilimler ve Sağlık Bülteni (SoSa). 2026; Bahar(18):60-70` |
+| running head, title form | body pages | `<short title>. SoSa. 2026;Bahar(18)` |
+| running head, journal form | body pages | `Sosyal Bilimler ve Sağlık Bülteni (SoSa). 2026; Bahar(18)` |
+| suggested citation | page one | `<authors> (2026). <Turkish title>. `*`journal (SoSa), Bahar(18),`*` 60-70` |
 
-Set `\SosaMasthead{}`, `\SosaRunningHead{}` or `\SosaCitation{}` by hand only
-when the derived version is wrong — an explicit value always wins.
+Only page one carries the page range; the body forms stop at the issue number.
+
+The two body forms **alternate** — the page straight after the front page takes
+the article title, the next takes the journal, and so on:
+
+```latex
+\SosaRunningHeadMode{alternate}   % title, journal, title … (default)
+\SosaRunningHeadMode{title}       % the article title on every body page
+\SosaRunningHeadMode{journal}     % the journal line on every body page
+```
+
+Both sample issues of the journal use `title` throughout, so that is the option
+to pick for strict fidelity to them.
+
+Set `\SosaMasthead{}`, `\SosaRunningHead{}`, `\SosaRunningHeadJournal{}` or
+`\SosaCitation{}` by hand only when a derived version is wrong — an explicit
+value always wins.
 
 `\SosaPages` also sets the page counter **and** anchors the ornament
 alternation. A bare `\setcounter{page}{60}` will not do it.

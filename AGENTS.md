@@ -105,9 +105,14 @@ Do **not** type the commas between authors, the superscript numbers, or the
 ORCID marks — the class inserts all three. Do not number the affiliations
 either.
 
-The masthead line, the running head and the suggested citation are derived
+The masthead, both running-head forms and the suggested citation are derived
 from the issue data plus `\SosaCitationAuthors{…}`. Only set `\SosaMasthead`,
-`\SosaRunningHead` or `\SosaCitation` if the derived version is wrong.
+`\SosaRunningHead`, `\SosaRunningHeadJournal` or `\SosaCitation` if a derived
+version is wrong.
+
+Body pages alternate between the article title and the journal line;
+`\SosaRunningHeadMode{title}` puts the title on every body page instead, which
+is what the printed sample issues do.
 
 ### 3. Fill in `body.tex`
 
